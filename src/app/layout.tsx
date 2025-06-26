@@ -27,6 +27,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <nav className="w-full flex items-center justify-between px-8 py-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
+          <span className="text-xl font-bold tracking-tight text-foreground">CryptoTasks</span>
+          <div className="flex gap-6">
+            <a href="/freelancers" className="text-foreground hover:underline underline-offset-4 font-medium">Freelancers</a>
+            <a href="#" className="text-foreground hover:underline underline-offset-4 font-medium">Agent</a>
+          </div>
+        </nav>
         {children}
       </body>
     </html>
