@@ -7,7 +7,7 @@ export default function Agent() {
       <div className="w-full max-w-2xl flex flex-col">
         <div className="bg-gray-800 rounded-t-2xl p-6 min-h-[220px] flex flex-col items-center">
           <div className="text-3xl font-bold text-cyan-400 mb-2 text-center">Hi, I'm CryptoTasks.</div>
-          <div className="text-lg text-gray-200 mb-8 text-center">Ask Agent, it works for you</div>
+          <div className="text-lg text-gray-200 mb-8 text-center">Ask Agent, it works for you </div>
           {/* Chat messages would go here */}
         </div>
         <div className="bg-gray-800 rounded-b-2xl p-3 flex flex-col">

@@ -27,11 +27,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <nav className="w-full flex items-center justify-between px-8 py-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
-          <span className="text-xl font-bold tracking-tight text-foreground">CryptoTasks</span>
-          <div className="flex gap-6">
-            <a href="/freelancers" className="text-foreground hover:underline underline-offset-4 font-medium">Freelancers</a>
-            <a href="/agent" className="text-foreground hover:underline underline-offset-4 font-medium">Agent</a>
+        <nav className="w-full flex items-center justify-between px-8 py-6 bg-[#004899] text-white rounded-b-2xl shadow-lg">
+          <span className="text-2xl font-bold tracking-tight">CryptoTasks</span>
+          <div className="flex gap-8">
+            <a href="/freelancers" className="hover:underline underline-offset-4 font-semibold text-lg">Freelancers</a>
+            <a href="/agent" className="hover:underline underline-offset-4 font-semibold text-lg">Agent</a>
           </div>
         </nav>
         {children}
