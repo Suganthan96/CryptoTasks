@@ -1,7 +1,7 @@
 import React from "react";
 import { FaInstagram, FaTwitter, FaDiscord, FaStar } from "react-icons/fa";
 
-const freelancers = [
+export const freelancers = [
   { name: "Alice Kim", role: "Frontend Developer", desc: "Passionate about crafting beautiful and responsive UIs. Loves working with React and Tailwind CSS.", projects: 24, stars: 4.8, perfection: 98 },
   { name: "Brian Lee", role: "Backend Engineer", desc: "Expert in scalable APIs and databases. Enjoys optimizing server performance.", projects: 31, stars: 4.6, perfection: 95 },
   { name: "Carla Smith", role: "UI/UX Designer", desc: "Designs intuitive user experiences. Focused on accessibility and clean layouts.", projects: 19, stars: 4.9, perfection: 99 },
