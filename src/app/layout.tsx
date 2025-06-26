@@ -31,7 +31,7 @@ export default function RootLayout({
           <span className="text-xl font-bold tracking-tight text-foreground">CryptoTasks</span>
           <div className="flex gap-6">
             <a href="/freelancers" className="text-foreground hover:underline underline-offset-4 font-medium">Freelancers</a>
-            <a href="#" className="text-foreground hover:underline underline-offset-4 font-medium">Agent</a>
+            <a href="/agent" className="text-foreground hover:underline underline-offset-4 font-medium">Agent</a>
           </div>
         </nav>
         {children}
