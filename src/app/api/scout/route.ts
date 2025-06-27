@@ -16,7 +16,7 @@ function tokenize(text: string) {
 
 function matchFreelancers(prompt: string): Pick<Freelancer, "name" | "role" | "stars" | "perfection">[] {
   if (!prompt) {
-    // No prompt, return top 3 by rating
+  
     return (freelancers as Freelancer[])
       .slice()
       .sort((a, b) => b.stars - a.stars || b.perfection - a.perfection)
@@ -24,23 +24,23 @@ function matchFreelancers(prompt: string): Pick<Freelancer, "name" | "role" | "s
       .map(({ name, role, stars, perfection }) => ({ name, role, stars, perfection }));
   }
   const promptTokens = tokenize(prompt);
-  // Score freelancers by token match in role or desc (partial and full word)
+  
   const scored = (freelancers as Freelancer[]).map(f => {
     let score = 0;
     const roleTokens = tokenize(f.role);
     const descTokens = tokenize(f.desc);
     for (const pToken of promptTokens) {
-      // Partial and full word match in role
+    
       if (roleTokens.some(rt => rt.includes(pToken))) score += 3;
-      // Partial and full word match in desc
+      
       if (descTokens.some(dt => dt.includes(pToken))) score += 1;
     }
     return { ...f, score };
   });
-  // Filter those with score > 0, or fallback to all
+ 
   const filtered = scored.filter(f => f.score > 0);
   const toSort = filtered.length > 0 ? filtered : scored;
-  // Sort by score, then stars, then perfection
+ 
   return toSort
     .slice()
     .sort((a, b) => b.score - a.score || b.stars - a.stars || b.perfection - a.perfection)
@@ -51,25 +51,20 @@ function matchFreelancers(prompt: string): Pick<Freelancer, "name" | "role" | "s
 export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json();
-    const topFreelancers = matchFreelancers(prompt);
-    return NextResponse.json({ topFreelancers });
+   
+    const res = await fetch("http://localhost:8000/scout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt, freelancers }),
+    });
+    if (!res.ok) throw new Error("Agentic server error");
+    const data = await res.json();
+    return NextResponse.json({ agentMessage: data.agentMessage });
   } catch (err) {
-    // fallback: top 3 by rating
-    const topFreelancers = (freelancers as Freelancer[])
-      .slice()
-      .sort((a, b) => b.stars - a.stars || b.perfection - a.perfection)
-      .slice(0, 3)
-      .map(({ name, role, stars, perfection }) => ({ name, role, stars, perfection }));
-    return NextResponse.json({ topFreelancers, error: (err as Error).message }, { status: 200 });
+    return NextResponse.json({ agentMessage: "Sorry, I couldn't process your request right now. Please try again later." }, { status: 200 });
   }
 }
 
 export async function GET(req: NextRequest) {
-  // For backward compatibility, just return top 3 by rating
-  const topFreelancers = (freelancers as Freelancer[])
-    .slice()
-    .sort((a, b) => b.stars - a.stars || b.perfection - a.perfection)
-    .slice(0, 3)
-    .map(({ name, role, stars, perfection }) => ({ name, role, stars, perfection }));
-  return NextResponse.json({ topFreelancers });
+  return NextResponse.json({ agentMessage: "Hi! I'm Scout, your AI assistant. Ask me to find the best freelancers for your needs!" });
 } 

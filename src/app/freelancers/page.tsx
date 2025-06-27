@@ -6,17 +6,17 @@ export const freelancers = [
   { name: "Brian Lee", role: "Backend Engineer", desc: "Expert in scalable APIs and databases. Enjoys optimizing server performance.", projects: 31, stars: 4.6, perfection: 95 },
   { name: "Carla Smith", role: "UI/UX Designer", desc: "Designs intuitive user experiences. Focused on accessibility and clean layouts.", projects: 19, stars: 4.9, perfection: 99 },
   { name: "David Chen", role: "Full Stack Dev", desc: "Bridges frontend and backend seamlessly. Always learning new tech stacks.", projects: 27, stars: 4.7, perfection: 97 },
-  { name: "Elena Rossi", role: "Mobile Developer", desc: "Builds fast, reliable mobile apps. Enthusiastic about cross-platform solutions.", projects: 22, stars: 4.5, perfection: 94 },
+  { name: "Elena Rossi", role: "Web3 Developer", desc: "Builds fast, reliable mobile apps. Enthusiastic about cross-platform solutions.", projects: 22, stars: 4.9, perfection: 94 },
   { name: "Felix Turner", role: "DevOps Engineer", desc: "Automates deployments and monitors systems. Keeps everything running smoothly.", projects: 18, stars: 4.8, perfection: 96 },
   { name: "Grace Park", role: "QA Specialist", desc: "Ensures bug-free releases. Detail-oriented and passionate about quality.", projects: 20, stars: 4.7, perfection: 97 },
   { name: "Hugo Silva", role: "AI Engineer", desc: "Develops smart algorithms and ML models. Loves solving complex problems.", projects: 16, stars: 4.9, perfection: 99 },
-  { name: "Ivy Wang", role: "Web3 Developer", desc: "Builds decentralized apps and smart contracts. Blockchain enthusiast.", projects: 14, stars: 4.6, perfection: 95 },
+  { name: "Ivy Wang", role: "Web3 Developer", desc: "Builds decentralized apps and smart contracts. Blockchain enthusiast.", projects: 21, stars: 4.6, perfection: 95 },
   { name: "Jack Brown", role: "Cloud Architect", desc: "Designs scalable cloud infrastructure. AWS and Azure certified.", projects: 23, stars: 4.8, perfection: 98 },
   { name: "Kira Patel", role: "Security Analyst", desc: "Protects systems from threats. Conducts audits and penetration tests.", projects: 17, stars: 4.7, perfection: 96 },
   { name: "Leo Müller", role: "Data Scientist", desc: "Turns data into actionable insights. Skilled in Python and visualization.", projects: 21, stars: 4.9, perfection: 99 },
   { name: "Maya Singh", role: "Product Manager", desc: "Leads teams to deliver great products. Strong communicator and planner.", projects: 25, stars: 4.5, perfection: 93 },
-  { name: "Nina Lopez", role: "Content Writer", desc: "Creates engaging and clear content. Loves storytelling and research.", projects: 29, stars: 4.8, perfection: 97 },
-  { name: "Omar Farouk", role: "Blockchain Dev", desc: "Specializes in secure blockchain solutions. Keeps up with crypto trends.", projects: 15, stars: 4.7, perfection: 96 },
+  { name: "Nina Lopez", role: "Web3 Developer", desc: "Creates engaging and clear content. Loves storytelling and research.", projects: 10, stars: 4.8, perfection: 97 },
+  { name: "Omar Farouk", role: "Blockchain Dev", desc: "Specializes in secure blockchain solutions. Keeps up with crypto trends.", projects: 25, stars: 4.7, perfection: 96 },
 ];
 
 export default function Freelancers() {
