@@ -14,7 +14,7 @@ export const freelancers = [
   { name: "Jack Brown", role: "Cloud Architect", desc: "Designs scalable cloud infrastructure. AWS and Azure certified.", projects: 23, stars: 4.8, perfection: 98 },
   { name: "Kira Patel", role: "Security Analyst", desc: "Protects systems from threats. Conducts audits and penetration tests.", projects: 17, stars: 4.7, perfection: 96 },
   { name: "Leo Müller", role: "Data Scientist", desc: "Turns data into actionable insights. Skilled in Python and visualization.", projects: 21, stars: 4.9, perfection: 99 },
-  { name: "Maya Singh", role: "Product Manager", desc: "Leads teams to deliver great products. Strong communicator and planner.", projects: 25, stars: 4.5, perfection: 93 },
+  { name: "Maya Singh", role: "web3 developer", desc: "Leads teams to deliver great products. Strong communicator and planner.", projects: 28, stars: 4.5, perfection: 93 },
   { name: "Nina Lopez", role: "Web3 Developer", desc: "Creates engaging and clear content. Loves storytelling and research.", projects: 10, stars: 4.8, perfection: 97 },
   { name: "Omar Farouk", role: "Blockchain Dev", desc: "Specializes in secure blockchain solutions. Keeps up with crypto trends.", projects: 25, stars: 4.7, perfection: 96 },
 ];

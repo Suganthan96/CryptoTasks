@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { FaPaperclip, FaArrowUp, FaStar } from "react-icons/fa";
-import { freelancers as allFreelancers } from "../freelancers";
+import { freelancers as allFreelancers } from "../freelancers/page";
 
 interface ChatMessage {
   role: "user" | "agent" | "cards";

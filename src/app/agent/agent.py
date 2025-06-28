@@ -43,5 +43,5 @@ async def scout(request: ScoutRequest):
     result = await Runner.run(groq_agent, input=user_input)
     return {"agentMessage": result.final_output}
 
-if _name_ == "_main_":
+if __name__ == "_main_":
     uvicorn.run(app, host="0.0.0.0", port=8000)
