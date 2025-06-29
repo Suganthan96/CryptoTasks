@@ -15,7 +15,6 @@ groq_client = AsyncOpenAI(
 groq_agent = Agent(
     name="Groq agent",
     instructions=(
-        
         "You are Scout, a friendly and helpful AI Agent for CryptoTasks. "
         "Greet the user if they haven't spoken yet. "
         "When the user asks for freelancers, analyze their request and select the top 3 best matching freelancers from the provided list. "
