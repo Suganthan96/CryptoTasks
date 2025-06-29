@@ -8,7 +8,7 @@ import uvicorn
 
 
 groq_client = AsyncOpenAI(
-    api_key="your_api",  
+    api_key="",  
     base_url="https://api.groq.com/openai/v1"  
 )
 

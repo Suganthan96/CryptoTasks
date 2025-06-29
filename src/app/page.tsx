@@ -8,6 +8,7 @@ import { RainbowKitProvider, ConnectButton } from "@rainbow-me/rainbowkit";
 import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import styled from 'styled-components';
 
 const config = getDefaultConfig({
   appName: "CryptoTasks",
@@ -23,6 +24,96 @@ const config = getDefaultConfig({
 });
 
 const queryClient = new QueryClient();
+
+const StyledConnectWrapper = styled.div`
+  .connect-btn-row {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: fit-content;
+  }
+  button {
+    --primary: #ff5569;
+    --neutral-1: #f7f8f7;
+    --neutral-2: #e7e7e7;
+    --radius: 14px;
+    cursor: pointer;
+    border-radius: var(--radius);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+    border: none;
+    box-shadow: 0 0.5px 0.5px 1px rgba(255, 255, 255, 0.2),
+      0 10px 20px rgba(0, 0, 0, 0.2), 0 4px 5px 0px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+    min-width: 200px;
+    padding: 20px 48px 20px 20px; /* right padding for arrow */
+    height: 68px;
+    font-family: "Galano Grotesque", Poppins, Montserrat, sans-serif;
+    font-style: normal;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 1px 2px rgba(255, 255, 255, 0.3),
+      0 15px 30px rgba(0, 0, 0, 0.3), 0 10px 3px -3px rgba(0, 0, 0, 0.04);
+  }
+  button:active {
+    transform: scale(1);
+    box-shadow: 0 0 1px 2px rgba(255, 255, 255, 0.3),
+      0 10px 3px -3px rgba(0, 0, 0, 0.2);
+  }
+  button:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    border: 2.5px solid transparent;
+    background: linear-gradient(var(--neutral-1), var(--neutral-2)) padding-box,
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.45)) border-box;
+    z-index: 0;
+    transition: all 0.4s ease;
+  }
+  button:hover::after {
+    transform: scale(1.05, 1.1);
+    box-shadow: inset 0 -1px 3px 0 rgba(255, 255, 255, 1);
+  }
+  button::before {
+    content: "";
+    inset: 7px 6px 6px 6px;
+    position: absolute;
+    background: linear-gradient(to top, var(--neutral-1), var(--neutral-2));
+    border-radius: 30px;
+    filter: blur(0.5px);
+    z-index: 2;
+  }
+  .arrow-icon {
+    position: absolute;
+    right: 18px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    color: var(--primary);
+    transition: transform 0.2s, color 0.2s;
+    pointer-events: none;
+  }
+  @keyframes arrowWave {
+    0% { transform: translateX(0) scale(1.1); }
+    30% { transform: translateX(6px) scale(1.15) rotate(-10deg); }
+    60% { transform: translateX(2px) scale(1.1) rotate(8deg); }
+    100% { transform: translateX(0) scale(1.1); }
+  }
+  .connect-btn-row:hover .arrow-icon {
+    animation: arrowWave 0.7s cubic-bezier(.4,1.6,.6,1) forwards;
+    color: #ff5569;
+  }
+`;
 
 function GatedHome() {
   const { isConnected } = useAccount();
@@ -44,15 +135,31 @@ function GatedHome() {
       <p className="text-xl font-semibold text-cyan-300 mb-4 text-center">
         Find and hire the top freenlancers on chain
       </p>
-      <ConnectButton
-        showBalance={false}
-        accountStatus={{
-          smallScreen: "avatar",
-          largeScreen: "full",
-        }}
-        chainStatus="icon"
-        label="Connect Wallet"
-      />
+      <StyledConnectWrapper>
+        <div className="connect-btn-row">
+          <ConnectButton
+            showBalance={false}
+            accountStatus={{
+              smallScreen: "avatar",
+              largeScreen: "full",
+            }}
+            chainStatus="icon"
+            label="Connect Wallet"
+          />
+          <span className="arrow-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <g style={{ filter: 'url(#shadow)' }}>
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </g>
+              <defs>
+                <filter id="shadow">
+                  <feDropShadow dx="0" dy="1" stdDeviation="0.6" floodOpacity="0.5" />
+                </filter>
+              </defs>
+            </svg>
+          </span>
+        </div>
+      </StyledConnectWrapper>
       <img
         src="/front.png"
         alt="CryptoTasks"
