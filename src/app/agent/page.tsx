@@ -59,6 +59,30 @@ export default function Agent() {
     const userPrompt = input.trim();
     setChat((prev) => [...prev, { role: "user", content: userPrompt }]);
     setInput("");
+
+    // Detect 'send project proposal to @username' or 'send project invitation to @username' or 'send project invitation to name'
+    const proposalMatch = userPrompt.match(/send project (proposal|invitation) to @?(\w+)/i);
+    if (proposalMatch) {
+      const usernameOrName = proposalMatch[2].toLowerCase();
+      // Try to match by username first
+      let freelancer = allFreelancers.find(f => f.username.toLowerCase() === usernameOrName);
+      // If not found, try to match by first name (case-insensitive)
+      if (!freelancer) {
+        freelancer = allFreelancers.find(f => f.name.toLowerCase().split(' ')[0] === usernameOrName);
+      }
+      if (freelancer) {
+        // Open private chat and send proposal
+        openPrivateChat(freelancer, true); // true = force proposal message
+        setChat(prev => [
+          ...prev,
+          { role: "agent", content: `Project proposal sent to @${freelancer.username}!` },
+        ]);
+        setLoading(false);
+        inputRef.current?.focus();
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       const res = await fetch("/api/scout", {
@@ -139,15 +163,19 @@ export default function Agent() {
     setShowModal(true);
   }
 
-  function openPrivateChat(freelancer: any) {
+  function openPrivateChat(freelancer: any, forceProposal = false) {
     setPrivateChatFreelancer(freelancer);
     setPrivateChatOpen(true);
-    setPrivateChats(prev => ({
-      ...prev,
-      [freelancer.username]: prev[freelancer.username] || [
-        { from: "agent", text: `Hi @${freelancer.username}, I have a project proposal for you! Please review the details and let me know if you're interested.` }
-      ]
-    }));
+    setPrivateChats(prev => {
+      const alreadyHasChat = prev[freelancer.username] && prev[freelancer.username].length > 0;
+      if (alreadyHasChat && !forceProposal) return prev;
+      return {
+        ...prev,
+        [freelancer.username]: [
+          { from: "agent", text: `Hi @${freelancer.username}, I have a project proposal for you! Please review the details and let me know if you're interested.` }
+        ]
+      };
+    });
     setTimeout(() => privateInputRef.current?.focus(), 100);
     setShowModal(false);
   }
@@ -226,12 +254,6 @@ export default function Agent() {
           <div className="bg-gray-800 rounded-xl p-6 w-96">
             <div className="text-xl font-bold text-cyan-400 mb-2">@{selectedFreelancer.username}</div>
             <div className="text-gray-200 mb-4">{selectedFreelancer.desc}</div>
-            <button
-              className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg"
-              onClick={() => openPrivateChat(selectedFreelancer)}
-            >
-              Message
-            </button>
             <button
               className="ml-4 text-gray-400 hover:text-white"
               onClick={() => setShowModal(false)}
