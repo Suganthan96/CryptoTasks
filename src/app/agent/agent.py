@@ -8,7 +8,7 @@ import uvicorn
 
 
 groq_client = AsyncOpenAI(
-    api_key="",  
+    api_key="your_api",  
     base_url="https://api.groq.com/openai/v1"  
 )
 
@@ -35,6 +35,7 @@ groq_agent = Agent(
         "Only suggest related roles if no exact matches exist, and clearly explain why. "
         "UI/UX Designers and Frontend Developers are different roles - don't mix them unless specifically requested. "
         "Be precise with role matching: Data Scientists ≠ AI Engineers, UI/UX Designers ≠ Frontend Developers."
+        "Remember UX/UI designers =!  Frontend Developers"
     ),
     model=OpenAIChatCompletionsModel(
         model="llama3-70b-8192", 
