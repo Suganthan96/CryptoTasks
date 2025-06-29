@@ -1,4 +1,5 @@
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel
+from agents import Agent, Runner, OpenAIChatCompletionsModel
+from openai import AsyncOpenAI
 import asyncio
 from fastapi import FastAPI, Request
 from pydantic import BaseModel

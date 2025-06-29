@@ -39,7 +39,13 @@ function GatedHome() {
 
   if (!showContent) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center">
+        {/* CryptoTasks Brand Heading */}
+        <h1 className="text-5xl md:text-6xl font-extrabold text-center mb-8">
+          <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+            CryptoTasks
+          </span>
+        </h1>
         <div className="bg-gray-800 p-8 rounded-2xl shadow-xl flex flex-col items-center">
           <h1 className="text-2xl font-bold text-cyan-400 mb-4">Connect your wallet to continue</h1>
           <ConnectButton
