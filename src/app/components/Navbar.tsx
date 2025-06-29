@@ -7,6 +7,7 @@ export default function Navbar() {
       <div className="flex gap-8">
         <a href="/freelancers" className="hover:underline underline-offset-4 font-semibold text-lg">Freelancers</a>
         <a href="/agent" className="hover:underline underline-offset-4 font-semibold text-lg">Agent</a>
+        <a href="/profile" className="hover:underline underline-offset-4 font-semibold text-lg">Profile</a>
       </div>
     </nav>
   );
