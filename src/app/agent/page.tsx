@@ -226,6 +226,7 @@ export default function Agent() {
               <div>
                 <div className="text-xl font-bold text-cyan-400">@{privateChatFreelancer.username}</div>
                 <div className="text-gray-200 text-sm">{privateChatFreelancer.name}</div>
+                <div className="text-gray-400 text-xs mt-1">Wallet: {privateChatFreelancer.wallet}</div>
               </div>
               <button className="text-gray-400 hover:text-white text-2xl" onClick={() => setPrivateChatOpen(false)}>&times;</button>
             </div>
