@@ -32,6 +32,11 @@ const StyledConnectWrapper = styled.div`
     position: relative;
     width: fit-content;
   }
+  .button-with-arrow {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
   button {
     --primary: #ff5569;
     --neutral-1: #f7f8f7;
@@ -109,7 +114,7 @@ const StyledConnectWrapper = styled.div`
     60% { transform: translateX(2px) scale(1.1) rotate(8deg); }
     100% { transform: translateX(0) scale(1.1); }
   }
-  .connect-btn-row:hover .arrow-icon {
+  .button-with-arrow:hover .arrow-icon {
     animation: arrowWave 0.7s cubic-bezier(.4,1.6,.6,1) forwards;
     color: #ff5569;
   }
@@ -137,27 +142,52 @@ function GatedHome() {
       </p>
       <StyledConnectWrapper>
         <div className="connect-btn-row">
-          <ConnectButton
-            showBalance={false}
-            accountStatus={{
-              smallScreen: "avatar",
-              largeScreen: "full",
-            }}
-            chainStatus="icon"
-            label="Connect Wallet"
-          />
-          <span className="arrow-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-              <g style={{ filter: 'url(#shadow)' }}>
-                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </g>
-              <defs>
-                <filter id="shadow">
-                  <feDropShadow dx="0" dy="1" stdDeviation="0.6" floodOpacity="0.5" />
-                </filter>
-              </defs>
-            </svg>
-          </span>
+          <div className="button-with-arrow">
+            <ConnectButton
+              showBalance={false}
+              accountStatus={{
+                smallScreen: "avatar",
+                largeScreen: "full",
+              }}
+              chainStatus="icon"
+              label="Connect Wallet"
+            />
+            <span className="arrow-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <g style={{ filter: 'url(#shadow)' }}>
+                  <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </g>
+                <defs>
+                  <filter id="shadow">
+                    <feDropShadow dx="0" dy="1" stdDeviation="0.6" floodOpacity="0.5" />
+                  </filter>
+                </defs>
+              </svg>
+            </span>
+          </div>
+          <div className="button-with-arrow" style={{ marginLeft: 24 }}>
+            <ConnectButton
+              showBalance={false}
+              accountStatus={{
+                smallScreen: "avatar",
+                largeScreen: "full",
+              }}
+              chainStatus="icon"
+              label="Connect Wallet"
+            />
+            <span className="arrow-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <g style={{ filter: 'url(#shadow)' }}>
+                  <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </g>
+                <defs>
+                  <filter id="shadow">
+                    <feDropShadow dx="0" dy="1" stdDeviation="0.6" floodOpacity="0.5" />
+                  </filter>
+                </defs>
+              </svg>
+            </span>
+          </div>
         </div>
       </StyledConnectWrapper>
       <img
