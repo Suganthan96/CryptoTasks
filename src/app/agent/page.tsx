@@ -251,11 +251,12 @@ export default function Agent() {
             </div>
           </div>
         )}
-        {/* Modal for freelancer profile */}
+        {/* Modal for freelancer profile *//*popup windown of the info*/}
         {showModal && selectedFreelancer && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-40">
             <div className="bg-gray-800 rounded-xl p-6 w-96">
-              <div className="text-xl font-bold text-cyan-400 mb-2">@{selectedFreelancer.username}</div>
+              <div className="text-xl font-bold text-cyan-400 mb-2">@{selectedFreelancer.username}</div> 
+              <div className="text-gray-400 text-sm mb-4">Wallet: {selectedFreelancer.wallet}</div>
               <div className="text-gray-200 mb-4">{selectedFreelancer.desc}</div>
               <button
                 className="ml-4 text-gray-400 hover:text-white"
