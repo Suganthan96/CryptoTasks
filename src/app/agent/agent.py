@@ -1,4 +1,5 @@
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel
+from agents import Agent, Runner, OpenAIChatCompletionsModel
+from openai import AsyncOpenAI
 import asyncio
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
@@ -14,7 +15,6 @@ groq_client = AsyncOpenAI(
 groq_agent = Agent(
     name="Groq agent",
     instructions=(
-        
         "You are Scout, a friendly and helpful AI Agent for CryptoTasks. "
         "Greet the user if they haven't spoken yet. "
         "When the user asks for freelancers, analyze their request and select the top 3 best matching freelancers from the provided list. "
@@ -35,6 +35,7 @@ groq_agent = Agent(
         "Only suggest related roles if no exact matches exist, and clearly explain why. "
         "UI/UX Designers and Frontend Developers are different roles - don't mix them unless specifically requested. "
         "Be precise with role matching: Data Scientists ≠ AI Engineers, UI/UX Designers ≠ Frontend Developers."
+        "Remember UX/UI designers =!  Frontend Developers"
     ),
     model=OpenAIChatCompletionsModel(
         model="llama3-70b-8192", 
