@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { FaPaperclip, FaArrowUp, FaStar } from "react-icons/fa";
-import { freelancers as allFreelancers } from "../freelancers/page";
+import { freelancers as allFreelancers } from "../freelancers/data";
 import Navbar from "../components/Navbar";
 
 interface ChatMessage {
