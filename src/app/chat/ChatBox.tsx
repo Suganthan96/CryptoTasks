@@ -78,9 +78,16 @@ const ChatBox = ({ role: propRole }: ChatBoxProps) => {
 
   // Set peer from query param after role is set
   useEffect(() => {
-    if (role && receiver && address && receiver !== address) {
+    if (
+      role &&
+      receiver &&
+      address &&
+      receiver !== address &&
+      (!peer || peer.address !== receiver || peer.role !== (role === "client" ? "freelancer" : "client"))
+    ) {
       setPeer({ address: receiver, role: role === "client" ? "freelancer" : "client", name: "" });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [role, address, receiver]);
 
   // Fetch and subscribe to chat messages from Supabase
