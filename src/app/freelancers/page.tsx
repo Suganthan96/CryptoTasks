@@ -1,24 +1,7 @@
 import React from "react";
 import { FaInstagram, FaTwitter, FaDiscord, FaStar } from "react-icons/fa";
 import Navbar from "../components/Navbar";
-
-export const freelancers = [
-  { name: "Alice Kim", username: "alice", role: "Frontend Developer", desc: "Passionate about crafting beautiful and responsive UIs. Loves working with React and Tailwind CSS.", projects: 24, stars: 4.8, perfection: 98 },
-  { name: "Brian Lee", username: "brian", role: "Backend Engineer", desc: "Expert in scalable APIs and databases. Enjoys optimizing server performance.", projects: 31, stars: 4.6, perfection: 95 },
-  { name: "Carla Smith", username: "carla", role: "UI/UX Designer", desc: "Designs intuitive user experiences. Focused on accessibility and clean layouts.", projects: 19, stars: 4.9, perfection: 99 },
-  { name: "David Chen", username: "david", role: "Full Stack Dev", desc: "Bridges frontend and backend seamlessly. Always learning new tech stacks.", projects: 27, stars: 4.7, perfection: 97 },
-  { name: "Elena Rossi", username: "elena", role: "Web3 Developer", desc: "Builds fast, reliable mobile apps. Enthusiastic about cross-platform solutions.", projects: 22, stars: 4.9, perfection: 94 },
-  { name: "Felix Turner", username: "felix", role: "DevOps Engineer", desc: "Automates deployments and monitors systems. Keeps everything running smoothly.", projects: 18, stars: 4.8, perfection: 96 },
-  { name: "Grace Park", username: "grace", role: "QA Specialist", desc: "Ensures bug-free releases. Detail-oriented and passionate about quality.", projects: 20, stars: 4.7, perfection: 97 },
-  { name: "Hugo Silva", username: "hugo", role: "AI Engineer", desc: "Develops smart algorithms and ML models. Loves solving complex problems.", projects: 16, stars: 4.9, perfection: 99 },
-  { name: "Ivy Wang", username: "ivy", role: "Web3 Developer", desc: "Builds decentralized apps and smart contracts. Blockchain enthusiast.", projects: 21, stars: 4.6, perfection: 95 },
-  { name: "Jack Brown", username: "jack", role: "Cloud Architect", desc: "Designs scalable cloud infrastructure. AWS and Azure certified.", projects: 23, stars: 4.8, perfection: 98 },
-  { name: "Kira Patel", username: "kira", role: "Security Analyst", desc: "Protects systems from threats. Conducts audits and penetration tests.", projects: 17, stars: 4.7, perfection: 96 },
-  { name: "Leo Müller", username: "leo", role: "Data Scientist", desc: "Turns data into actionable insights. Skilled in Python and visualization.", projects: 21, stars: 4.9, perfection: 99 },
-  { name: "Maya Singh", username: "maya", role: "web3 developer", desc: "Leads teams to deliver great products. Strong communicator and planner.", projects: 28, stars: 4.5, perfection: 93 },
-  { name: "Nina Lopez", username: "nina", role: "Web3 Developer", desc: "Creates engaging and clear content. Loves storytelling and research.", projects: 10, stars: 4.8, perfection: 97 },
-  { name: "Omar Farouk", username: "omar", role: "Blockchain Dev", desc: "Specializes in secure blockchain solutions. Keeps up with crypto trends.", projects: 25, stars: 4.7, perfection: 96 },
-];
+import { freelancers } from "./data";
 
 export default function Freelancers() {
   return (

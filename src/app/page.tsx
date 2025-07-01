@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import styled from 'styled-components';
+import React from 'react';
 
 const config = getDefaultConfig({
   appName: "CryptoTasks",
@@ -25,6 +27,78 @@ const config = getDefaultConfig({
 
 const queryClient = new QueryClient();
 
+const StyledWrapper = styled.div`
+  .button {
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    padding-block: 0.5rem;
+    padding-inline: 1.25rem;
+    background-color: rgb(0 107 179);
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    gap: 10px;
+    font-weight: bold;
+    border: 3px solid #ffffff4d;
+    outline: none;
+    overflow: hidden;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .button:hover {
+    transform: scale(1.05);
+    border-color: #fff9;
+  }
+
+  .button:hover .icon {
+    transform: translate(4px);
+  }
+
+  .button:hover::before {
+    animation: shine 1.5s ease-out infinite;
+  }
+
+  .button::before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100%;
+    background-image: linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0) 30%,
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0) 70%
+    );
+    top: 0;
+    left: -100px;
+    opacity: 0.6;
+  }
+
+  @keyframes shine {
+    0% {
+      left: -100px;
+    }
+
+    60% {
+      left: 100%;
+    }
+
+    to {
+      left: 100%;
+    }
+  }
+`;
+
 const StyledConnectWrapper = styled.div`
   .connect-btn-row {
     display: flex;
@@ -32,86 +106,10 @@ const StyledConnectWrapper = styled.div`
     position: relative;
     width: fit-content;
   }
-  button {
-    --primary: #ff5569;
-    --neutral-1: #f7f8f7;
-    --neutral-2: #e7e7e7;
-    --radius: 14px;
-    cursor: pointer;
-    border-radius: var(--radius);
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-    border: none;
-    box-shadow: 0 0.5px 0.5px 1px rgba(255, 255, 255, 0.2),
-      0 10px 20px rgba(0, 0, 0, 0.2), 0 4px 5px 0px rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .button-with-arrow {
     position: relative;
-    transition: all 0.3s ease;
-    min-width: 200px;
-    padding: 20px 48px 20px 20px; /* right padding for arrow */
-    height: 68px;
-    font-family: "Galano Grotesque", Poppins, Montserrat, sans-serif;
-    font-style: normal;
-    font-size: 18px;
-    font-weight: 600;
-  }
-  button:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 1px 2px rgba(255, 255, 255, 0.3),
-      0 15px 30px rgba(0, 0, 0, 0.3), 0 10px 3px -3px rgba(0, 0, 0, 0.04);
-  }
-  button:active {
-    transform: scale(1);
-    box-shadow: 0 0 1px 2px rgba(255, 255, 255, 0.3),
-      0 10px 3px -3px rgba(0, 0, 0, 0.2);
-  }
-  button:after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius);
-    border: 2.5px solid transparent;
-    background: linear-gradient(var(--neutral-1), var(--neutral-2)) padding-box,
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.45)) border-box;
-    z-index: 0;
-    transition: all 0.4s ease;
-  }
-  button:hover::after {
-    transform: scale(1.05, 1.1);
-    box-shadow: inset 0 -1px 3px 0 rgba(255, 255, 255, 1);
-  }
-  button::before {
-    content: "";
-    inset: 7px 6px 6px 6px;
-    position: absolute;
-    background: linear-gradient(to top, var(--neutral-1), var(--neutral-2));
-    border-radius: 30px;
-    filter: blur(0.5px);
-    z-index: 2;
-  }
-  .arrow-icon {
-    position: absolute;
-    right: 18px;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    height: 28px;
     display: flex;
     align-items: center;
-    color: var(--primary);
-    transition: transform 0.2s, color 0.2s;
-    pointer-events: none;
-  }
-  @keyframes arrowWave {
-    0% { transform: translateX(0) scale(1.1); }
-    30% { transform: translateX(6px) scale(1.15) rotate(-10deg); }
-    60% { transform: translateX(2px) scale(1.1) rotate(8deg); }
-    100% { transform: translateX(0) scale(1.1); }
-  }
-  .connect-btn-row:hover .arrow-icon {
-    animation: arrowWave 0.7s cubic-bezier(.4,1.6,.6,1) forwards;
-    color: #ff5569;
   }
 `;
 
@@ -135,29 +133,79 @@ function GatedHome() {
       <p className="text-xl font-semibold text-cyan-300 mb-4 text-center">
         Find and hire the top freenlancers on chain
       </p>
+      <p className="text-xl font-bold text-white-300 mb-4 text-center">Login</p>
       <StyledConnectWrapper>
         <div className="connect-btn-row">
-          <ConnectButton
-            showBalance={false}
-            accountStatus={{
-              smallScreen: "avatar",
-              largeScreen: "full",
-            }}
-            chainStatus="icon"
-            label="Connect Wallet"
-          />
-          <span className="arrow-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-              <g style={{ filter: 'url(#shadow)' }}>
-                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </g>
-              <defs>
-                <filter id="shadow">
-                  <feDropShadow dx="0" dy="1" stdDeviation="0.6" floodOpacity="0.5" />
-                </filter>
-              </defs>
-            </svg>
-          </span>
+          <div className="button-with-arrow">
+            <ConnectButton.Custom>
+              {({
+                account,
+                chain,
+                openAccountModal,
+                openChainModal,
+                openConnectModal,
+                authenticationStatus,
+                mounted,
+              }) => {
+                const ready = mounted && authenticationStatus !== "loading";
+                const connected =
+                  ready &&
+                  account &&
+                  chain &&
+                  (!authenticationStatus || authenticationStatus === "authenticated");
+                return (
+                  <StyledWrapper>
+                    <button
+                      className="button"
+                      onClick={connected ? openAccountModal : openConnectModal}
+                      type="button"
+                      disabled={!ready}
+                    >
+                      As Freelancer
+                      <svg className="icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  </StyledWrapper>
+                );
+              }}
+            </ConnectButton.Custom>
+          </div>
+          <div className="button-with-arrow" style={{ marginLeft: 24 }}>
+            <ConnectButton.Custom>
+              {({
+                account,
+                chain,
+                openAccountModal,
+                openChainModal,
+                openConnectModal,
+                authenticationStatus,
+                mounted,
+              }) => {
+                const ready = mounted && authenticationStatus !== "loading";
+                const connected =
+                  ready &&
+                  account &&
+                  chain &&
+                  (!authenticationStatus || authenticationStatus === "authenticated");
+                return (
+                  <StyledWrapper>
+                    <button
+                      className="button"
+                      onClick={connected ? openAccountModal : openConnectModal}
+                      type="button"
+                      disabled={!ready}
+                    >
+                      As Client
+                      <svg className="icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  </StyledWrapper>
+                );
+              }}
+            </ConnectButton.Custom>
+          </div>
         </div>
       </StyledConnectWrapper>
       <img

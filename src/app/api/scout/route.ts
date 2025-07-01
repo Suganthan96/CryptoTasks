@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { freelancers } from "../../freelancers/page";
+import { freelancers } from "../../freelancers/data";
 
 type Freelancer = {
   name: string;

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { headers } from "next/headers";
+import ClientProviders from "./components/ClientProviders";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,21 +18,17 @@ export const metadata: Metadata = {
   description: "A Web3-powered freelance platform",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = await headers(); // ✅ Fix: Await headers()
-  const pathname = headersList.get("x-next-url"); // ✅ Now this works
-  const isHomePage = pathname === "/";
-
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ClientProviders>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );

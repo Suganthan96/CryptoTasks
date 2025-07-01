@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { FaPaperclip, FaArrowUp, FaStar } from "react-icons/fa";
-import { freelancers as allFreelancers } from "../freelancers/page";
+import { freelancers as allFreelancers } from "../freelancers/data";
 import Navbar from "../components/Navbar";
 
 interface ChatMessage {
@@ -226,6 +226,7 @@ export default function Agent() {
               <div>
                 <div className="text-xl font-bold text-cyan-400">@{privateChatFreelancer.username}</div>
                 <div className="text-gray-200 text-sm">{privateChatFreelancer.name}</div>
+                <div className="text-gray-400 text-xs mt-1">Wallet: {privateChatFreelancer.wallet}</div>
               </div>
               <button className="text-gray-400 hover:text-white text-2xl" onClick={() => setPrivateChatOpen(false)}>&times;</button>
             </div>
@@ -251,11 +252,12 @@ export default function Agent() {
             </div>
           </div>
         )}
-        {/* Modal for freelancer profile */}
+        {/* Modal for freelancer profile *//*popup windown of the info*/}
         {showModal && selectedFreelancer && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-40">
             <div className="bg-gray-800 rounded-xl p-6 w-96">
-              <div className="text-xl font-bold text-cyan-400 mb-2">@{selectedFreelancer.username}</div>
+              <div className="text-xl font-bold text-cyan-400 mb-2">@{selectedFreelancer.username}</div> 
+              <div className="text-gray-400 text-sm mb-4">Wallet: {selectedFreelancer.wallet}</div>
               <div className="text-gray-200 mb-4">{selectedFreelancer.desc}</div>
               <button
                 className="ml-4 text-gray-400 hover:text-white"
