@@ -5,6 +5,8 @@ from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from typing import List
 import uvicorn
+import requests
+import os
 
 
 groq_client = AsyncOpenAI(
@@ -34,8 +36,11 @@ groq_agent = Agent(
         "When matching freelancers, prioritize exact role matches first. "
         "Only suggest related roles if no exact matches exist, and clearly explain why. "
         "UI/UX Designers and Frontend Developers are different roles - don't mix them unless specifically requested. "
-        "Be precise with role matching: Data Scientists ≠ AI Engineers, UI/UX Designers ≠ Frontend Developers."
+        "Be precise with role matching: Data Scientist ≠ AI Engineers, UI/UX Designers ≠ Frontend Developers."
         "Remember UX/UI designers =!  Frontend Developers"
+        "After user tells like (i would like to give my project to @username), you must asks the user to give the project details, duration, budget, etc."
+        "Remember:after user gives the details of the project , you must asks the user can i send the project proposal to @username"
+        "when the user tells like (ok,send project proposal to @username) or (ok) -- you must send the project proposal to the @username"
     ),
     model=OpenAIChatCompletionsModel(
         model="llama3-70b-8192", 
@@ -49,10 +54,29 @@ class ScoutRequest(BaseModel):
     prompt: str
     freelancers: List[dict]
 
+# Helper to send proposal to freelancer via Supabase
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_API_KEY = os.environ.get("SUPABASE_API_KEY")
+
+def send_proposal_to_freelancer(client_wallet, freelancer_wallet, proposal_text):
+    url = f"{SUPABASE_URL}/rest/v1/messages"
+    headers = {
+        "apikey": SUPABASE_API_KEY,
+        "Authorization": f"Bearer {SUPABASE_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "from": client_wallet,
+        "to": freelancer_wallet,
+        "text": proposal_text
+    }
+    requests.post(url, json=data, headers=headers)
+
 @app.post("/scout")
 async def scout(request: ScoutRequest):
     user_input = f"User: {request.prompt}\nFreelancers: {request.freelancers}\nRespond as Scout, the friendly AI agent."
     result = await Runner.run(groq_agent, input=user_input)
+    # In the scout endpoint, after confirming proposal intent, call send_proposal_to_freelancer with the right details.
     return {"agentMessage": result.final_output}
 
 if __name__ == "_main_":
