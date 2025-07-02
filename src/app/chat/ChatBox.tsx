@@ -6,11 +6,13 @@ import { supabase } from "../../lib/supabase";
 import { useSearchParams } from "next/navigation";
 
 type Role = "client" | "freelancer";
+
 interface Peer {
   address: string;
   role: Role;
   name: string;
 }
+
 interface ChatMessage {
   from: string;
   to: string;
@@ -25,40 +27,105 @@ interface ChatWindowProps {
   onSend: (msg: string) => void;
 }
 
+function ProposalMessage({ message, isFromUser }: {
+  message: ChatMessage;
+  isFromUser: boolean;
+}) {
+  // Extract proposal details from the text
+  const proposalText = message.text.replace("Project Proposal: ", "");
+  
+  return (
+    <div className={`mb-4 flex ${isFromUser ? "justify-end" : "justify-start"}`}>
+      <div className={`max-w-[80%] rounded-xl p-4 ${
+        isFromUser ? "bg-cyan-700" : "bg-purple-700"
+      }`}>
+        <div className="flex items-center mb-2">
+          <span className="text-yellow-400 font-bold text-sm">🤖 SCOUT AGENT PROPOSAL</span>
+          <span className="ml-2 px-2 py-1 rounded text-xs bg-yellow-600">
+            AUTOMATED
+          </span>
+        </div>
+        
+        <div className="text-white">
+          <p className="text-sm leading-relaxed">{proposalText}</p>
+        </div>
+        
+        <div className="mt-3 pt-2 border-t border-gray-600">
+          <span className="text-xs text-gray-300">
+            Sent by Scout Agent • {new Date(message.timestamp || Date.now()).toLocaleString()}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ChatWindow({ user, peer, chat, onSend }: ChatWindowProps) {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat]);
+
   return (
-    <div className="w-full max-w-xl bg-gray-800 rounded-2xl shadow-xl p-6 flex flex-col h-[500px]">
-      <div className="flex items-center mb-4">
-        <span className="text-cyan-400 font-bold text-lg mr-2">{peer.role === "freelancer" ? "Freelancer" : "Client"}:</span>
-        <span className="text-gray-300 font-mono text-xs">{peer.address}</span>
+    <div className="w-full max-w-xl bg-gray-800 rounded-2xl shadow-xl p-6 flex flex-col h-[600px]">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <span className="text-cyan-400 font-bold text-lg mr-2">
+            {peer.role === "freelancer" ? "Freelancer" : "Client"}:
+          </span>
+          <span className="text-gray-300 font-mono text-xs">{peer.address}</span>
+        </div>
       </div>
+
       <div className="flex-1 overflow-y-auto mb-4 bg-gray-900 rounded-xl p-4">
-        {chat.map((msg: ChatMessage, i: number) => (
-          <div key={i} className={`mb-2 flex ${msg.from === user.address ? "justify-end" : "justify-start"}`}>
-            <div className={`px-4 py-2 rounded-lg max-w-[70%] ${msg.from === user.address ? "bg-cyan-700 text-white" : "bg-gray-700 text-white"}`}>
-              {msg.text}
+        {chat.map((msg: ChatMessage, i: number) => {
+          const isFromUser = msg.from === user.address;
+          const isProposal = msg.text.startsWith("Project Proposal:");
+          
+          if (isProposal) {
+            return (
+              <ProposalMessage
+                key={i}
+                message={msg}
+                isFromUser={isFromUser}
+              />
+            );
+          }
+          
+          return (
+            <div key={i} className={`mb-2 flex ${isFromUser ? "justify-end" : "justify-start"}`}>
+              <div className={`px-4 py-2 rounded-lg max-w-[70%] ${
+                isFromUser ? "bg-cyan-700 text-white" : "bg-gray-700 text-white"
+              }`}>
+                {msg.text}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
+      
       <div className="flex items-center mt-2">
         <input
           className="flex-1 bg-gray-700 text-gray-100 rounded-lg px-4 py-2 outline-none placeholder-gray-400"
           placeholder="Type a message..."
           value={input}
           onChange={e => setInput(e.target.value)}
-          onKeyDown={e => { if (e.key === "Enter") { onSend(input); setInput(""); } }}
+          onKeyDown={e => { 
+            if (e.key === "Enter") { 
+              onSend(input); 
+              setInput(""); 
+            } 
+          }}
         />
         <button
-          className="ml-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white"
+          className="ml-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white transition-colors"
           onClick={() => { onSend(input); setInput(""); }}
-        >Send</button>
+        >
+          Send
+        </button>
       </div>
     </div>
   );
@@ -87,23 +154,30 @@ const ChatBox = ({ role: propRole }: ChatBoxProps) => {
     ) {
       setPeer({ address: receiver, role: role === "client" ? "freelancer" : "client", name: "" });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [role, address, receiver]);
+  }, [role, address, receiver, peer]);
 
   // Fetch and subscribe to chat messages from Supabase
   useEffect(() => {
     if (!address || !peer) return;
     let ignore = false;
+    
     supabase
       .from('messages')
       .select('*')
       .or(`and(from.eq.${address},to.eq.${peer.address}),and(from.eq.${peer.address},to.eq.${address})`)
       .order('timestamp', { ascending: true })
-      .then(({ data }) => { if (!ignore) setChat((data as ChatMessage[]) || []); });
+      .then(({ data }) => { 
+        if (!ignore) {
+          console.log('Loaded messages:', data); // Debug log
+          setChat((data as ChatMessage[]) || []); 
+        }
+      });
+    
     const channel = supabase
       .channel('messages')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload: any) => {
         const msg = payload.new as ChatMessage;
+        console.log('New message received:', msg); // Debug log
         if (
           (msg.from === address && msg.to === peer.address) ||
           (msg.from === peer.address && msg.to === address)
@@ -112,6 +186,7 @@ const ChatBox = ({ role: propRole }: ChatBoxProps) => {
         }
       })
       .subscribe();
+    
     return () => {
       ignore = true;
       supabase.removeChannel(channel);
@@ -119,18 +194,24 @@ const ChatBox = ({ role: propRole }: ChatBoxProps) => {
   }, [address, peer]);
 
   if (!isConnected) return null;
-  if (!receiver) return <div className="text-red-400 text-center mt-8">Please provide a receiver wallet address to start a chat.</div>;
+  if (!receiver) return (
+    <div className="text-red-400 text-center mt-8">
+      Please provide a receiver wallet address to start a chat.
+    </div>
+  );
   if (!peer) return null;
 
   return (
     <div className="w-full flex flex-col items-center justify-center px-4 relative mt-8">
       {/* Main content */}
       <div className="bg-gray-800 p-6 rounded-2xl shadow-xl flex flex-col items-center mb-8 mt-8 w-full max-w-2xl">
-        <h1 className="text-3xl font-bold text-cyan-400 mb-2">Welcome, {role.charAt(0).toUpperCase() + role.slice(1)}!</h1>
+        <h1 className="text-3xl font-bold text-cyan-400 mb-2">
+          Welcome, {role.charAt(0).toUpperCase() + role.slice(1)}!
+        </h1>
         <p className="text-gray-200 text-center mb-2 max-w-xl">
           {role === "client"
-            ? "You can send project proposals to freelancers and chat in real time."
-            : "You can receive project proposals from clients and chat in real time."}
+            ? "Your Scout Agent will automatically send project proposals to freelancers. You can also chat in real time."
+            : "You will receive automated project proposals from Scout Agents and can chat with clients in real time."}
         </p>
         <div className="flex flex-col md:flex-row gap-4 w-full justify-center items-center mt-4">
           <div className="bg-gray-900 p-4 rounded-xl shadow flex flex-col items-center w-full">
@@ -145,6 +226,7 @@ const ChatBox = ({ role: propRole }: ChatBoxProps) => {
           </div>
         </div>
       </div>
+      
       <ChatWindow
         user={{ address: address as string, role: role as Role, name: "" }}
         peer={peer}
@@ -161,4 +243,4 @@ const ChatBox = ({ role: propRole }: ChatBoxProps) => {
   );
 };
 
-export default ChatBox; 
+export default ChatBox;

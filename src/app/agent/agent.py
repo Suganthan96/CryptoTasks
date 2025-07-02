@@ -10,7 +10,7 @@ import os
 
 
 groq_client = AsyncOpenAI(
-    api_key="",  
+    api_key="yours",  
     base_url="https://api.groq.com/openai/v1"  
 )
 
@@ -76,7 +76,7 @@ def send_proposal_to_freelancer(client_wallet, freelancer_wallet, proposal_text)
 async def scout(request: ScoutRequest):
     user_input = f"User: {request.prompt}\nFreelancers: {request.freelancers}\nRespond as Scout, the friendly AI agent."
     result = await Runner.run(groq_agent, input=user_input)
-    # In the scout endpoint, after confirming proposal intent, call send_proposal_to_freelancer with the right details.
+    
     return {"agentMessage": result.final_output}
 
 if __name__ == "_main_":
