@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaPaperclip, FaArrowUp, FaStar } from "react-icons/fa";
 import { freelancers as allFreelancers } from "../freelancers/data";
 import Navbar from "../components/Navbar";
+import { useAccount } from "wagmi";
+import ClientProviders from "../components/ClientProviders";
 
 interface ChatMessage {
   role: "user" | "agent" | "cards";
@@ -11,6 +13,7 @@ interface ChatMessage {
 }
 
 export default function Agent() {
+  const { address: clientWallet, isConnected } = useAccount();
   const [chat, setChat] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,6 +26,9 @@ export default function Agent() {
   const [privateChatFreelancer, setPrivateChatFreelancer] = useState<any | null>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
   const [privateInput, setPrivateInput] = useState("");
+  const [pendingProposal, setPendingProposal] = useState<{ details: string, freelancerName: string } | null>(null);
+  const [pendingWalletPrompt, setPendingWalletPrompt] = useState<string | null>(null);
+  const [freelancerWallet, setFreelancerWallet] = useState<string>("");
 
   useEffect(() => {
     setChat([
@@ -61,22 +67,61 @@ export default function Agent() {
     setChat((prev) => [...prev, { role: "user", content: userPrompt }]);
     setInput("");
 
+    // If collecting project details
+    if (pendingProposal && !pendingProposal.details) {
+      // The user just entered project details
+      setPendingProposal(prev => prev ? { ...prev, details: userPrompt } : null);
+      setChat(prev => [
+        ...prev,
+        { role: "agent", content: `Now, please enter the wallet address for ${pendingProposal.freelancerName}.` },
+      ]);
+      setPendingWalletPrompt(pendingProposal.freelancerName);
+      setLoading(false);
+      inputRef.current?.focus();
+      return;
+    }
+
+    // If waiting for freelancer wallet address
+    if (pendingWalletPrompt) {
+      // userPrompt is the wallet address, do not overwrite project details
+      setFreelancerWallet(userPrompt);
+      setPendingWalletPrompt(null);
+      setChat((prev) => [...prev, { role: "agent", content: "Thank you! Sending the project proposal now..." }]);
+      // Send proposal to backend using the stored project details
+      if (pendingProposal && pendingProposal.details && clientWallet && userPrompt) {
+        await fetch("/api/send-proposal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from: clientWallet,
+            to: userPrompt,
+            text: `Project Proposal: ${pendingProposal.details}`,
+          }),
+        });
+        setChat((prev) => [...prev, { role: "agent", content: `Project proposal sent to wallet ${userPrompt}!` }]);
+        setPendingProposal(null);
+        setFreelancerWallet("");
+      }
+      setLoading(false);
+      inputRef.current?.focus();
+      return;
+    }
+
     // Detect 'send project proposal to @username' or 'send project invitation to @username' or 'send project invitation to name'
     const proposalMatch = userPrompt.match(/send project (proposal|invitation) to @?(\w+)/i);
     if (proposalMatch) {
       const usernameOrName = proposalMatch[2].toLowerCase();
-      // Try to match by username first
       let freelancer = allFreelancers.find(f => f.username.toLowerCase() === usernameOrName);
-      // If not found, try to match by first name (case-insensitive)
       if (!freelancer) {
         freelancer = allFreelancers.find(f => f.name.toLowerCase().split(' ')[0] === usernameOrName);
       }
       if (freelancer) {
-        // Open private chat and send proposal
-        openPrivateChat(freelancer, true); // true = force proposal message
+        // Prompt for wallet address
+        setPendingProposal({ details: "", freelancerName: freelancer.name });
+        setPendingWalletPrompt(freelancer.name);
         setChat(prev => [
           ...prev,
-          { role: "agent", content: `Project proposal sent to @${freelancer.username}!` },
+          { role: "agent", content: `Can you provide the description of the project for sending the project proposal to ${freelancer.name}.`},
         ]);
         setLoading(false);
         inputRef.current?.focus();
@@ -381,5 +426,13 @@ export default function Agent() {
         </div>
       </div>
     </>
+  );
+}
+
+export function AgentWithProviders() {
+  return (
+    <ClientProviders>
+      <Agent />
+    </ClientProviders>
   );
 } 
