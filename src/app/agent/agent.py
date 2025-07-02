@@ -7,10 +7,12 @@ from typing import List
 import uvicorn
 import requests
 import os
+import requests
+import os
 
 
 groq_client = AsyncOpenAI(
-    api_key="yours",  
+    api_key="",  
     base_url="https://api.groq.com/openai/v1"  
 )
 
@@ -41,6 +43,9 @@ groq_agent = Agent(
         "After user tells like (i would like to give my project to @username), you must asks the user to give the project details, duration, budget, etc."
         "Remember:after user gives the details of the project , you must asks the user can i send the project proposal to @username"
         "when the user tells like (ok,send project proposal to @username) or (ok) -- you must send the project proposal to the @username"
+        "After user tells like (i would like to give my project to @username), you must asks the user to give the project details, duration, budget, etc."
+        "Remember:after user gives the details of the project , you must asks the user can i send the project proposal to @username"
+        "when the user tells like (ok,send project proposal to @username) or (ok) -- you must send the project proposal to the @username"
     ),
     model=OpenAIChatCompletionsModel(
         model="llama3-70b-8192", 
@@ -53,6 +58,8 @@ app = FastAPI()
 class ScoutRequest(BaseModel):
     prompt: str
     freelancers: List[dict]
+
+
 
 # Helper to send proposal to freelancer via Supabase
 SUPABASE_URL = os.environ.get("SUPABASE_URL")

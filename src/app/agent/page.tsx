@@ -26,8 +26,7 @@ export default function Agent() {
   const [privateChatFreelancer, setPrivateChatFreelancer] = useState<any | null>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
   const [privateInput, setPrivateInput] = useState("");
-  const [pendingProposal, setPendingProposal] = useState<{ details: string, freelancerName: string, freelancerWallet: string } | null>(null);
-  const [freelancerWallet, setFreelancerWallet] = useState<string>("");
+  const [pendingProposal, setPendingProposal] = useState<{ details: string, freelancerName: string, freelancerWallet?: string } | null>(null);
 
   useEffect(() => {
     setChat([
@@ -66,48 +65,6 @@ export default function Agent() {
     setChat((prev) => [...prev, { role: "user", content: userPrompt }]);
     setInput("");
 
-    // Detect 'send project proposal to @username' or 'send project invitation to @username' or 'send project invitation to name'
-    const proposalMatch = userPrompt.match(/send project (proposal|invitation) to @?(\w+)/i);
-    if (proposalMatch) {
-      const usernameOrName = proposalMatch[2].toLowerCase();
-      let freelancer = allFreelancers.find(f => f.username.toLowerCase() === usernameOrName);
-      if (!freelancer) {
-        freelancer = allFreelancers.find(f => f.name.toLowerCase().split(' ')[0] === usernameOrName);
-      }
-      // If project details are not yet collected, store freelancer info and prompt for details
-      if (freelancer && (!pendingProposal || !pendingProposal.details)) {
-        setPendingProposal({ details: "", freelancerName: freelancer.name, freelancerWallet: freelancer.wallet });
-        setChat(prev => [
-          ...prev,
-          { role: "agent", content: `Please provide the project details for ${freelancer.name}.` },
-        ]);
-        setLoading(false);
-        inputRef.current?.focus();
-        return;
-      }
-      // If project details are already collected, send proposal automatically
-      if (freelancer && pendingProposal && pendingProposal.details) {
-        await fetch("/api/send-proposal", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            from: clientWallet,
-            to: freelancer.wallet,
-            text: `Project Proposal: ${pendingProposal.details}`,
-          }),
-        });
-        setChat(prev => [
-          ...prev,
-          { role: "agent", content: `Project proposal sent to wallet ${freelancer.wallet}!` },
-        ]);
-        setPendingProposal(null);
-        setFreelancerWallet("");
-        setLoading(false);
-        inputRef.current?.focus();
-        return;
-      }
-    }
-
     // If collecting project details
     if (pendingProposal && !pendingProposal.details) {
       // The user just entered project details
@@ -128,7 +85,47 @@ export default function Agent() {
           { role: "agent", content: `Project proposal sent to wallet ${pendingProposal.freelancerWallet}!` },
         ]);
         setPendingProposal(null);
-        setFreelancerWallet("");
+        setLoading(false);
+        inputRef.current?.focus();
+        return;
+      }
+    }
+
+    // Detect 'send project proposal to @username' or 'send project invitation to @username' or 'send project invitation to name'
+    const proposalMatch = userPrompt.match(/send project (proposal|invitation) to @?(\w+)/i);
+    if (proposalMatch) {
+      const usernameOrName = proposalMatch[2].toLowerCase();
+      let freelancer = allFreelancers.find(f => f.username.toLowerCase() === usernameOrName);
+      if (!freelancer) {
+        freelancer = allFreelancers.find(f => f.name.toLowerCase().split(' ')[0] === usernameOrName);
+      }
+      if (freelancer && pendingProposal && pendingProposal.details) {
+        // Send proposal automatically using freelancer's wallet address
+        await fetch("/api/send-proposal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from: clientWallet,
+            to: freelancer.wallet,
+            text: `Project Proposal: ${pendingProposal.details}`,
+          }),
+        });
+        setChat(prev => [
+          ...prev,
+          { role: "agent", content: `Project proposal sent to wallet ${freelancer.wallet}!` },
+        ]);
+        setPendingProposal(null);
+        setLoading(false);
+        inputRef.current?.focus();
+        return;
+      }
+      // If project details are not yet collected, store freelancer info and prompt for details
+      if (freelancer && (!pendingProposal || !pendingProposal.details)) {
+        setPendingProposal({ details: "", freelancerName: freelancer.name, freelancerWallet: freelancer.wallet });
+        setChat(prev => [
+          ...prev,
+          { role: "agent", content: `Please provide the project details for ${freelancer.name}.` },
+        ]);
         setLoading(false);
         inputRef.current?.focus();
         return;
