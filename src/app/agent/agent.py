@@ -14,6 +14,7 @@ groq_client = AsyncOpenAI(
     base_url="https://api.groq.com/openai/v1"  
 )
 
+# --- Agent Definitions ---
 greeting_agent = Agent(
     name="Greeting Agent",
     instructions=(
@@ -45,7 +46,7 @@ freelancer_agent = Agent(
         "Only suggest related roles if no exact matches exist, and clearly explain why. "
         "UI/UX Designers and Frontend Developers are different roles - don't mix them unless specifically requested. "
         "Be precise with role matching: Data Scientist ≠ AI Engineers, UI/UX Designers ≠ Frontend Developers. "
-        "Remember UX/UI designers =!  Frontend Developers. "
+        "Remember UX/UI designers != Frontend Developers. "
     ),
     model=OpenAIChatCompletionsModel(
         model="llama3-70b-8192", 
@@ -59,6 +60,8 @@ proposal_agent = Agent(
         "After user tells like (i would like to give my project to @username), you must ask the user to give the project details, duration, budget, etc. "
         "After user gives the details of the project, you must ask the user: can I send the project proposal to @username? "
         "When the user tells like (ok, send project proposal to @username) or (ok), you must send the project proposal to the @username. "
+        "Remember: after user gives the details of the project, you must ask the user can I send the project proposal to @username? "
+        "When the user tells like (ok, send project proposal to @username) or (ok) -- you must send the project proposal to the @username. "
     ),
     model=OpenAIChatCompletionsModel(
         model="llama3-70b-8192", 
@@ -66,7 +69,7 @@ proposal_agent = Agent(
     ),
 )
 
-
+# --- Orchestration Function ---
 async def orchestrate(user_input, freelancers):
     lower_input = user_input.lower()
   
@@ -74,27 +77,28 @@ async def orchestrate(user_input, freelancers):
         result = await Runner.run(greeting_agent, input=user_input)
         return result.final_output
     elif any(keyword in lower_input for keyword in ["freelancer", "top", "filter", "match", "designer", "developer", "data scientist", "engineer"]):
-      
         result = await Runner.run(freelancer_agent, input=f"{user_input}\nFreelancers: {freelancers}")
         return result.final_output
     elif any(keyword in lower_input for keyword in ["give my project", "project details", "send project proposal", "proposal", "duration", "budget"]):
         result = await Runner.run(proposal_agent, input=user_input)
         return result.final_output
     else:
-        
         result = await Runner.run(greeting_agent, input=user_input)
         return result.final_output
 
+# --- FastAPI App Setup ---
 app = FastAPI()
 
 class ScoutRequest(BaseModel):
     prompt: str
     freelancers: List[dict]
 
+# --- Supabase Configuration ---
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_API_KEY = os.environ.get("SUPABASE_API_KEY")
 
 def send_proposal_to_freelancer(client_wallet, freelancer_wallet, proposal_text):
+    """Helper function to send proposal to freelancer via Supabase"""
     url = f"{SUPABASE_URL}/rest/v1/messages"
     headers = {
         "apikey": SUPABASE_API_KEY,
@@ -106,13 +110,32 @@ def send_proposal_to_freelancer(client_wallet, freelancer_wallet, proposal_text)
         "to": freelancer_wallet,
         "text": proposal_text
     }
-    requests.post(url, json=data, headers=headers)
+    try:
+        response = requests.post(url, json=data, headers=headers)
+        response.raise_for_status()
+        return {"success": True, "message": "Proposal sent successfully"}
+    except requests.exceptions.RequestException as e:
+        return {"success": False, "error": str(e)}
 
+# --- API Endpoints ---
 @app.post("/scout")
 async def scout(request: ScoutRequest):
+    """Main endpoint for Scout agent interactions"""
     user_input = f"User: {request.prompt}"
     agent_message = await orchestrate(user_input, request.freelancers)
     return {"agentMessage": agent_message}
 
-if __name__ == "_main_":
+@app.post("/send-proposal")
+async def send_proposal(client_wallet: str, freelancer_wallet: str, proposal_text: str):
+    """Endpoint to send project proposal to freelancer"""
+    result = send_proposal_to_freelancer(client_wallet, freelancer_wallet, proposal_text)
+    return result
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {"status": "healthy", "service": "CryptoTasks Scout Agent"}
+
+# --- Main Entry Point ---
+if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

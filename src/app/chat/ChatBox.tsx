@@ -133,12 +133,11 @@ function ChatWindow({ user, peer, chat, onSend }: ChatWindowProps) {
 }
 
 interface ChatBoxProps {
-  role?: Role;
+  role: Role;
 }
 
-const ChatBox = ({ role: propRole }: ChatBoxProps) => {
+const ChatBox = ({ role }: ChatBoxProps) => {
   const { isConnected, address } = useAccount();
-  const role = propRole || 'client';
   const [chat, setChat] = useState<ChatMessage[]>([]);
   const [selectedFreelancer, setSelectedFreelancer] = useState<typeof freelancers[0] | null>(null);
   const [peer, setPeer] = useState<Peer | null>(null);
