@@ -6,10 +6,7 @@ export default function Navbar() {
   const router = useRouter();
 
   const handleChatClick = () => {
-    const address = window.prompt("Enter receiver wallet address:");
-    if (address) {
-      router.push(`/chat?receiver=${address}`);
-    }
+    router.push('/chat');
   };
 
   return (

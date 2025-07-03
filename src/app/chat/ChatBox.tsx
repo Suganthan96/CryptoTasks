@@ -168,30 +168,27 @@ const ChatBox = ({ role }: ChatBoxProps) => {
     }
   }, [selectedFreelancer, address, role]);
 
-  // FREELANCER: Set peer from query param or from first chat
+  // FREELANCER: Set peer from first chat (no pop-up, no receiver param)
   useEffect(() => {
     if (role === "freelancer" && address) {
-      if (receiver && receiver !== address) {
-        setPeer({ address: receiver, role: "client", name: "Client" });
-      } else {
-        // If no receiver param, try to find the first chat from supabase
-        supabase
-          .from('messages')
-          .select('*')
-          .or(`to.eq.${address},from.eq.${address}`)
-          .order('timestamp', { ascending: true })
-          .then(({ data }) => {
-            const firstMsg = (data as ChatMessage[] || []).find(msg => msg.from !== address);
-            if (firstMsg) {
-              setPeer({ address: firstMsg.from, role: "client", name: "Client" });
-            }
-          });
-      }
+      // Always try to find the first chat from supabase
+      supabase
+        .from('messages')
+        .select('*')
+        .or(`to.eq.${address},from.eq.${address}`)
+        .order('timestamp', { ascending: true })
+        .then(({ data }) => {
+          // Find the first message where the freelancer is the receiver
+          const firstMsg = (data as ChatMessage[] || []).find(msg => msg.to === address && msg.from !== address);
+          if (firstMsg) {
+            setPeer({ address: firstMsg.from, role: "client", name: "Client" });
+          }
+        });
       setChat([]);
       setHasHistory(false);
       setFirstMessage("");
     }
-  }, [role, address, receiver]);
+  }, [role, address]);
 
   // Fetch chat history when peer changes
   useEffect(() => {
