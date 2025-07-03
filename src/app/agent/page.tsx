@@ -77,7 +77,7 @@ export default function Agent() {
           body: JSON.stringify({
             from: clientWallet,
             to: pendingProposal.freelancerWallet,
-            text: `Project Proposal: ${userPrompt}`,
+            text: `Project Proposal: ${userPrompt}\n\n[Client Wallet: ${clientWallet}]`,
           }),
         });
         setChat(prev => [
@@ -107,7 +107,7 @@ export default function Agent() {
           body: JSON.stringify({
             from: clientWallet,
             to: freelancer.wallet,
-            text: `Project Proposal: ${pendingProposal.details}`,
+            text: `Project Proposal: ${pendingProposal.details}\n\n[Client Wallet: ${clientWallet}]`,
           }),
         });
         setChat(prev => [
