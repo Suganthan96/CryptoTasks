@@ -10,7 +10,7 @@ import os
 
 # --- LLM Client Setup ---
 groq_client = AsyncOpenAI(
-    api_key="",  
+    api_key="Your_key",  
     base_url="https://api.groq.com/openai/v1"  
 )
 

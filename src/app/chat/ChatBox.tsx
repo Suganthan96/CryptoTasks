@@ -61,6 +61,30 @@ function ProposalMessage({ message, isFromUser }: {
   );
 }
 
+function autoLinkExplorer(text: string) {
+  // Regex for block explorer URLs
+  const urlRegex = /(https?:\/\/devnet\.explorer\.moved\.network\/transaction\/0x[0-9a-fA-F]+)/g;
+  // Regex for transaction hashes
+  const txHashRegex = /(0x[0-9a-fA-F]{64})/g;
+  // First, replace explorer URLs with links
+  let parts = text.split(urlRegex);
+  parts = parts.flatMap((part, i) => {
+    if (urlRegex.test(part)) {
+      return [<a key={"explorer-"+i} href={part} target="_blank" rel="noopener noreferrer" className="underline text-cyan-300">{part}</a>];
+    }
+    // Now, replace tx hashes with links to the explorer
+    const subparts = part.split(txHashRegex);
+    return subparts.map((sub, j) => {
+      if (txHashRegex.test(sub)) {
+        const url = `https://devnet.explorer.moved.network/transaction/${sub}`;
+        return <a key={"txhash-"+i+"-"+j} href={url} target="_blank" rel="noopener noreferrer" className="underline text-cyan-300">{sub}</a>;
+      }
+      return sub;
+    });
+  });
+  return parts;
+}
+
 function ChatWindow({ user, peer, chat, onSend }: ChatWindowProps) {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -100,7 +124,7 @@ function ChatWindow({ user, peer, chat, onSend }: ChatWindowProps) {
               <div className={`px-4 py-2 rounded-lg max-w-[70%] ${
                 isFromUser ? "bg-cyan-700 text-white" : "bg-gray-700 text-white"
               }`}>
-                {msg.text}
+                {autoLinkExplorer(msg.text)}
               </div>
             </div>
           );
@@ -157,15 +181,24 @@ const ChatBox = ({ role }: ChatBoxProps) => {
   // CLIENT: Set peer when a freelancer is selected
   useEffect(() => {
     if (role === "client") {
+      // Only update peer if it actually changes
       if (selectedFreelancer && address && selectedFreelancer.wallet !== address) {
-        setPeer({ address: selectedFreelancer.wallet, role: "freelancer", name: selectedFreelancer.name });
+        if (!peer || peer.address !== selectedFreelancer.wallet) {
+          setPeer({ address: selectedFreelancer.wallet, role: "freelancer", name: selectedFreelancer.name });
+          setChat([]);
+          setHasHistory(false);
+          setFirstMessage("");
+        }
       } else {
-        setPeer(null);
+        if (peer !== null) {
+          setPeer(null);
+          setChat([]);
+          setHasHistory(false);
+          setFirstMessage("");
+        }
       }
-      setChat([]);
-      setHasHistory(false);
-      setFirstMessage("");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFreelancer, address, role]);
 
   // FREELANCER: Set peer from first chat (no pop-up, no receiver param)
@@ -222,6 +255,15 @@ const ChatBox = ({ role }: ChatBoxProps) => {
       supabase.removeChannel(channel);
     };
   }, [address, peer]);
+
+  // Helper to detect and parse 'Work done release <amount> eth' messages
+  function parseWorkDoneRelease(msg: string): number | null {
+    const match = msg.trim().match(/^Work done release ([0-9.]+) eth$/i);
+    if (match) {
+      return parseFloat(match[1]);
+    }
+    return null;
+  }
 
   if (!isConnected) return null;
 
@@ -333,11 +375,44 @@ const ChatBox = ({ role }: ChatBoxProps) => {
                 peer={peer}
                 chat={chat}
                 onSend={async (msg: string) => {
-                  if (msg.trim()) {
-                    await supabase.from('messages').insert([
-                      { from: address, to: peer.address, text: msg }
-                    ]);
+                  if (!msg.trim()) return;
+                  // Only client triggers fund release
+                  if (role === "client") {
+                    const amount = parseWorkDoneRelease(msg);
+                    if (amount) {
+                      // Post the message first
+                      await supabase.from('messages').insert([
+                        { from: address, to: peer.address, text: msg }
+                      ]);
+                      // Call the API to release funds
+                      try {
+                        const res = await fetch("/api/release-funds", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ from: address, to: peer.address, amount })
+                        });
+                        const data = await res.json();
+                        if (data.hash) {
+                          await supabase.from('messages').insert([
+                            { from: address, to: peer.address, text: `Funds sent! Tx Hash: ${data.hash}` }
+                          ]);
+                        } else {
+                          await supabase.from('messages').insert([
+                            { from: address, to: peer.address, text: `Fund release failed: ${data.error || 'Unknown error'}` }
+                          ]);
+                        }
+                      } catch (err: any) {
+                        await supabase.from('messages').insert([
+                          { from: address, to: peer.address, text: `Fund release failed: ${err.message || err}` }
+                        ]);
+                      }
+                      return;
+                    }
                   }
+                  // Default: just send the message
+                  await supabase.from('messages').insert([
+                    { from: address, to: peer.address, text: msg }
+                  ]);
                 }}
               />
             ) : (

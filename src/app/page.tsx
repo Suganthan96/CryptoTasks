@@ -7,7 +7,7 @@ import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { RainbowKitProvider, ConnectButton } from "@rainbow-me/rainbowkit";
 import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import styled from 'styled-components';
 import React from 'react';
 
@@ -194,12 +194,13 @@ function GatedHome() {
   const { isConnected } = useAccount();
   const router = useRouter();
   const vantaRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (isConnected) {
+    if (isConnected && pathname !== "/freelancers") {
       router.push("/freelancers");
     }
-  }, [isConnected, router]);
+  }, [isConnected, pathname, router]);
 
   useEffect(() => {
     let vantaEffect: any = null;
@@ -343,5 +344,7 @@ export default function HomePage() {
         </RainbowKitProvider>
       </WagmiConfig>
     </QueryClientProvider>
-  );
+  )
+  return <GatedHome />;
 }
+
