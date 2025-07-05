@@ -1,14 +1,10 @@
-import getpass
-import webbrowser
+import sys
 from web3 import Web3
 
-UMI_DEVNET_RPC = "https://devnet.moved.network"
+UMI_DEVNET_RPC = "https://devnet.uminetwork.com/"
 UMI_DEVNET_CHAIN_ID = 42069
 BLOCK_EXPLORER_BASE_URL = "https://devnet.explorer.moved.network/transaction/"
 
-SENDER_ADDRESS = "add yours"
-RECIPIENT_ADDRESS = "add yours"
-AMOUNT_ETH = 0.001
 GAS_LIMIT = 25000
 MAX_FEE_PER_GAS_GWEI = 2
 MAX_PRIORITY_FEE_PER_GAS_GWEI = 1
@@ -37,14 +33,14 @@ def open_block_explorer(tx_hash):
         print("You can manually copy the URL above to view the transaction.")
 
 if __name__ == "__main__":
-    print("Type 'work done' to send payment...")
-    while True:
-        user_input = input().strip().lower()
-        if user_input == "work done":
-            break
-    
-    private_key = getpass.getpass("Enter your main account private key (will not be shown): ").strip()
-    
+    if len(sys.argv) != 5:
+        print("Usage: send_umi_work_done.py <sender_address> <recipient_address> <amount_eth> <private_key>")
+        sys.exit(1)
+    SENDER_ADDRESS = sys.argv[1]
+    RECIPIENT_ADDRESS = sys.argv[2]
+    AMOUNT_ETH = float(sys.argv[3])
+    private_key = sys.argv[4]
+
     try:
         sender = w3.eth.account.from_key(private_key)
         if sender.address.lower() != SENDER_ADDRESS.lower():
@@ -61,10 +57,7 @@ if __name__ == "__main__":
         
         if balance_wei < total_cost_wei:
             print(f"Warning: Insufficient funds! You need at least {w3.from_wei(total_cost_wei, 'ether')} ETH (including gas)")
-            proceed = input("Do you want to continue anyway? (y/N): ").strip().lower()
-            if proceed != 'y':
-                print("Aborted.")
-                exit(0)
+            sys.exit(1)
         
         nonce = w3.eth.get_transaction_count(sender.address)
         tx = {
@@ -94,6 +87,10 @@ if __name__ == "__main__":
             print("\n" + "="*50)
             open_block_explorer(formatted_tx_hash)
             print("="*50)
+        else:
+            print("Transaction failed.")
+            sys.exit(1)
         
     except Exception as e:
         print(f"Error: {e}")
+        sys.exit(1)

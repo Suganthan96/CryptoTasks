@@ -11,7 +11,7 @@ export const freelancers = [
     { name: "Jack Brown", username: "jack", role: "Cloud Architect", desc: "Designs scalable cloud infrastructure. AWS and Azure certified.", projects: 23, stars: 4.8, perfection: 98, wallet: "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc" },
     { name: "Kira Patel", username: "kira", role: "Security Analyst", desc: "Protects systems from threats. Conducts audits and penetration tests.", projects: 17, stars: 4.7, perfection: 96, wallet: "0x976EA74026E726554dB657fA54763abd0C3a0aa9" },
     { name: "Leo Müller", username: "leo", role: "Data Scientist", desc: "Turns data into actionable insights. Skilled in Python and visualization.", projects: 21, stars: 4.9, perfection: 99, wallet: "0x14dC79964da2C08b23698B3D3cc7Ca32193d9955" },
-    { name: "Maya Singh", username: "maya", role: "web3 developer", desc: "Leads teams to deliver great products. Strong communicator and planner.", projects: 28, stars: 4.5, perfection: 93, wallet: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f" },
+    { name: "Maya Singh", username: "maya", role: "web3 developer", desc: "Leads teams to deliver great products. Strong communicator and planner.", projects: 28, stars: 4.5, perfection: 93, wallet: "0x0754241982730dB1ecf4a2C5e7839C1467f13c5E" },
     { name: "Nina Lopez", username: "nina", role: "Web3 Developer", desc: "Creates engaging and clear content. Loves storytelling and research.", projects: 10, stars: 4.8, perfection: 97, wallet: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720" },
     { name: "Omar Farouk", username: "omar", role: "Blockchain Dev", desc: "Specializes in secure blockchain solutions. Keeps up with crypto trends.", projects: 25, stars: 4.7, perfection: 96, wallet: "0xBcd4042DE499D14e55001CcbB24a551F3b954096" },
   ];

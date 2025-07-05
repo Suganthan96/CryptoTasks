@@ -218,13 +218,5 @@ function GatedHome() {
 }
 
 export default function HomePage() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiConfig config={config}>
-        <RainbowKitProvider>
-          <GatedHome />
-        </RainbowKitProvider>
-      </WagmiConfig>
-    </QueryClientProvider>
-  );
+  return <GatedHome />;
 }
