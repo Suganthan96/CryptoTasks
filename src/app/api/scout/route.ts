@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { freelancers } from "../../freelancers/data";
+import { getBackendUrl } from "../../../lib/config";
 
 type Freelancer = {
   name: string;
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json();
    
-    const res = await fetch("http://localhost:8000/scout", {
+    const res = await fetch(`${getBackendUrl()}/scout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt, freelancers }),
