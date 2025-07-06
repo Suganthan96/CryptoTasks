@@ -1,0 +1,1 @@
+web: uvicorn src.app.agent.agent:app --host 0.0.0.0 --port $PORT 

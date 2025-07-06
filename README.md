@@ -3,6 +3,7 @@
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=yours
 NEXT_PUBLIC_SUPABASE_ANON_KEY=yours
+GROQ_API_KEY=yours
 ```
 
 ### installing

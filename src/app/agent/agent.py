@@ -7,10 +7,11 @@ from typing import List
 import uvicorn
 import requests
 import os
+from fastapi.middleware.cors import CORSMiddleware
 
 # --- LLM Client Setup ---
 groq_client = AsyncOpenAI(
-    api_key="Your_key",  
+    api_key=os.environ.get("GROQ_API_KEY"),  
     base_url="https://api.groq.com/openai/v1"  
 )
 
@@ -89,6 +90,14 @@ async def orchestrate(user_input, freelancers):
 # --- FastAPI App Setup ---
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # For production, restrict to your Vercel domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 class ScoutRequest(BaseModel):
     prompt: str
     freelancers: List[dict]
@@ -135,6 +144,10 @@ async def send_proposal(client_wallet: str, freelancer_wallet: str, proposal_tex
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "service": "CryptoTasks Scout Agent"}
+
+@app.get("/")
+async def hello():
+    return {"message": "Hello from FastAPI on Vercel!"}
 
 # --- Main Entry Point ---
 if __name__ == "__main__":

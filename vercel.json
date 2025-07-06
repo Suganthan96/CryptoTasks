@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/agent.py": {
+      "runtime": "vercel-python@3.1.7"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/agent/(.*)", "destination": "/api/agent.py" }
+  ]
+}
