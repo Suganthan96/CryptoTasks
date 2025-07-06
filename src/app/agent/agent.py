@@ -145,6 +145,10 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "service": "CryptoTasks Scout Agent"}
 
+@app.get("/")
+async def hello():
+    return {"message": "Hello from FastAPI on Vercel!"}
+
 # --- Main Entry Point ---
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
