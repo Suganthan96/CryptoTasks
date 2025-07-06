@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 pydantic==2.5.0
 requests==2.31.0
 openai==1.3.0
 python-dotenv==1.0.0 
+=======
+fastapi
+uvicorn 
+>>>>>>> 8937666553617dd091a4c809a46bc774ecb9e613
