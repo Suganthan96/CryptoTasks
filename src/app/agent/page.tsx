@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { FaPaperclip, FaArrowUp, FaStar } from "react-icons/fa";
-import { freelancers as allFreelancers } from "../freelancers/data";
+import { freelancers as allFreelancers, Freelancer } from "../freelancers/data";
 import Navbar from "../components/Navbar";
 import { useAccount } from "wagmi";
 import ClientProviders from "../components/ClientProviders";
@@ -9,7 +9,7 @@ import ClientProviders from "../components/ClientProviders";
 interface ChatMessage {
   role: "user" | "agent" | "cards";
   content?: string;
-  freelancers?: any[];
+  freelancers?: Freelancer[];
 }
 
 export default function Agent() {
@@ -18,12 +18,12 @@ export default function Agent() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [scoutedFreelancers, setScoutedFreelancers] = useState<any[]>([]);
-  const [selectedFreelancer, setSelectedFreelancer] = useState<any | null>(null);
+  const [scoutedFreelancers, setScoutedFreelancers] = useState<Freelancer[]>([]);
+  const [selectedFreelancer, setSelectedFreelancer] = useState<Freelancer | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [privateChats, setPrivateChats] = useState<{ [username: string]: {from: string, text: string}[] }>({});
   const [privateChatOpen, setPrivateChatOpen] = useState(false);
-  const [privateChatFreelancer, setPrivateChatFreelancer] = useState<any | null>(null);
+  const [privateChatFreelancer, setPrivateChatFreelancer] = useState<Freelancer | null>(null);
   const privateInputRef = useRef<HTMLInputElement>(null);
   const [privateInput, setPrivateInput] = useState("");
   const [pendingProposal, setPendingProposal] = useState<{ details: string, freelancerName: string, freelancerWallet?: string } | null>(null);
@@ -40,7 +40,7 @@ export default function Agent() {
 
   const extractFreelancerNames = (message: string) => {
     // Try to extract names from the agent's message (bolded or capitalized names)
-    const names = [];
+    const names: string[] = [];
     const regex = /\*\*(.*?)\*\*|([A-Z][a-z]+ [A-Z][a-z]+)/g;
     let match;
     while ((match = regex.exec(message))) {
@@ -195,7 +195,7 @@ export default function Agent() {
   };
 
   // Generate a fun fact for a freelancer
-  function getFunFact(f: any) {
+  function getFunFact(f: Freelancer) {
     // Simple fun fact logic: pick a highlight from their description or stats
     if (f.projects >= 25) return `Has completed over ${f.projects} projects!`;
     if (f.stars >= 4.9) return `Rated among the top with ${f.stars} stars!`;
@@ -207,12 +207,12 @@ export default function Agent() {
     return f.desc.split(".")[0] + ".";
   }
 
-  function handleUsernameClick(freelancer: any) {
+  function handleUsernameClick(freelancer: Freelancer) {
     setSelectedFreelancer(freelancer);
     setShowModal(true);
   }
 
-  function openPrivateChat(freelancer: any, forceProposal = false) {
+  function openPrivateChat(freelancer: Freelancer, forceProposal = false) {
     setPrivateChatFreelancer(freelancer);
     setPrivateChatOpen(true);
     setPrivateChats(prev => {
@@ -229,7 +229,7 @@ export default function Agent() {
     setShowModal(false);
   }
 
-  function handleMessageClick(freelancer: any) {
+  function handleMessageClick(freelancer: Freelancer) {
     openPrivateChat(freelancer);
   }
 

@@ -1,10 +1,11 @@
 "use client";
 
+import React from "react";
 import { useEffect, useState, useRef } from "react";
 import { useAccount } from "wagmi";
 import { supabase } from "../../lib/supabase";
 import { useSearchParams } from "next/navigation";
-import { freelancers } from "../freelancers/data";
+import { freelancers, Freelancer } from "../freelancers/data";
 
 type Role = "client" | "freelancer";
 
@@ -67,14 +68,17 @@ function autoLinkExplorer(text: string) {
   // Regex for transaction hashes
   const txHashRegex = /(0x[0-9a-fA-F]{64})/g;
   // First, replace explorer URLs with links
-  let parts = text.split(urlRegex);
+  let parts: (string | React.JSX.Element)[] = text.split(urlRegex);
   parts = parts.flatMap((part, i) => {
-    if (urlRegex.test(part)) {
+    if (typeof part === "string" && urlRegex.test(part)) {
       return [<a key={"explorer-"+i} href={part} target="_blank" rel="noopener noreferrer" className="underline text-cyan-300">{part}</a>];
+    }
+    if (typeof part !== "string") {
+      return [part];
     }
     // Now, replace tx hashes with links to the explorer
     const subparts = part.split(txHashRegex);
-    return subparts.map((sub, j) => {
+    return subparts.map((sub: string, j: number) => {
       if (txHashRegex.test(sub)) {
         const url = `https://devnet.explorer.moved.network/transaction/${sub}`;
         return <a key={"txhash-"+i+"-"+j} href={url} target="_blank" rel="noopener noreferrer" className="underline text-cyan-300">{sub}</a>;
@@ -163,7 +167,7 @@ interface ChatBoxProps {
 const ChatBox = ({ role }: ChatBoxProps) => {
   const { isConnected, address } = useAccount();
   const [chat, setChat] = useState<ChatMessage[]>([]);
-  const [selectedFreelancer, setSelectedFreelancer] = useState<typeof freelancers[0] | null>(null);
+  const [selectedFreelancer, setSelectedFreelancer] = useState<Freelancer | null>(null);
   const [peer, setPeer] = useState<Peer | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [hasHistory, setHasHistory] = useState(false);
@@ -240,8 +244,8 @@ const ChatBox = ({ role }: ChatBoxProps) => {
     // Subscribe to new messages
     const channel = supabase
       .channel('messages')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload: any) => {
-        const msg = payload.new as ChatMessage;
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload: { new: ChatMessage }) => {
+        const msg = payload.new;
         if (
           (msg.from === address && msg.to === peer.address) ||
           (msg.from === peer.address && msg.to === address)
@@ -401,9 +405,9 @@ const ChatBox = ({ role }: ChatBoxProps) => {
                             { from: address, to: peer.address, text: `Fund release failed: ${data.error || 'Unknown error'}` }
                           ]);
                         }
-                      } catch (err: any) {
+                      } catch (err) {
                         await supabase.from('messages').insert([
-                          { from: address, to: peer.address, text: `Fund release failed: ${err.message || err}` }
+                          { from: address, to: peer.address, text: `Fund release failed: ${err instanceof Error ? err.message : String(err)}` }
                         ]);
                       }
                       return;
