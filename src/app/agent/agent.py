@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # --- LLM Client Setup ---
 groq_client = AsyncOpenAI(
-    api_key="",  
+    api_key=os.environ.get("GROQ_API_KEY"),  
     base_url="https://api.groq.com/openai/v1"  
 )
 
