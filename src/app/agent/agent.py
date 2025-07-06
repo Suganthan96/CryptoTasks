@@ -7,10 +7,11 @@ from typing import List
 import uvicorn
 import requests
 import os
+from fastapi.middleware.cors import CORSMiddleware
 
 # --- LLM Client Setup ---
 groq_client = AsyncOpenAI(
-    api_key="Your_key",  
+    api_key="",  
     base_url="https://api.groq.com/openai/v1"  
 )
 
@@ -88,6 +89,14 @@ async def orchestrate(user_input, freelancers):
 
 # --- FastAPI App Setup ---
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # For production, restrict to your Vercel domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ScoutRequest(BaseModel):
     prompt: str
