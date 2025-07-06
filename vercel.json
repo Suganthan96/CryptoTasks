@@ -1,9 +1,10 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "src/app/agent/agent.py", "use": "@vercel/python" }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "src/app/agent/agent.py" }
+  "functions": {
+    "api/agent.py": {
+      "runtime": "python3.9"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/agent/(.*)", "destination": "/api/agent.py" }
   ]
 }
