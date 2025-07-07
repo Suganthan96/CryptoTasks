@@ -198,23 +198,6 @@ export default function Agent() {
     setShowModal(true);
   }
 
-  function openPrivateChat(freelancer: Freelancer, forceProposal = false) {
-    setPrivateChatFreelancer(freelancer);
-    setPrivateChatOpen(true);
-    setPrivateChats(prev => {
-      const alreadyHasChat = prev[freelancer.username] && prev[freelancer.username].length > 0;
-      if (alreadyHasChat && !forceProposal) return prev;
-      return {
-        ...prev,
-        [freelancer.username]: [
-          { from: "agent", text: `Hi @${freelancer.username}, I have a project proposal for you! Please review the details and let me know if you&apos;re interested.` }
-        ]
-      };
-    });
-    setTimeout(() => privateInputRef.current?.focus(), 100);
-    setShowModal(false);
-  }
-
   function handleSendPrivateMessage() {
     if (!privateInput.trim() || !privateChatFreelancer) return;
     setPrivateChats(prev => ({
