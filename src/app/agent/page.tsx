@@ -13,12 +13,11 @@ interface ChatMessage {
 }
 
 export default function Agent() {
-  const { address: clientWallet, isConnected } = useAccount();
+  const { address: clientWallet } = useAccount();
   const [chat, setChat] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [scoutedFreelancers, setScoutedFreelancers] = useState<Freelancer[]>([]);
   const [selectedFreelancer, setSelectedFreelancer] = useState<Freelancer | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [privateChats, setPrivateChats] = useState<{ [username: string]: {from: string, text: string}[] }>({});
@@ -32,14 +31,12 @@ export default function Agent() {
     setChat([
       {
         role: "agent",
-        content: "Hi! I'm Scout, your AI assistant. How can I help you today? Want me to scout any freelancer for you?",
+        content: "Hi! I&apos;m Scout, your AI assistant. How can I help you today? Want me to scout any freelancer for you?",
       },
     ]);
-    setScoutedFreelancers([]);
   }, []);
 
   const extractFreelancerNames = (message: string) => {
-    // Try to extract names from the agent's message (bolded or capitalized names)
     const names: string[] = [];
     const regex = /\*\*(.*?)\*\*|([A-Z][a-z]+ [A-Z][a-z]+)/g;
     let match;
@@ -47,11 +44,9 @@ export default function Agent() {
       if (match[1]) names.push(match[1]);
       else if (match[2]) names.push(match[2]);
     }
-    // Remove duplicates
     return [...new Set(names)];
   };
 
-  // Helper to detect if a message is a scouting request
   function isScoutingRequest(text: string) {
     const scoutKeywords = [
       "find", "top", "developer", "dev", "engineer", "designer", "freelancer", "data scientist", "web3", "backend", "frontend", "ai", "blockchain", "cloud", "qa", "product manager", "content writer", "security", "devops"
@@ -65,12 +60,9 @@ export default function Agent() {
     setChat((prev) => [...prev, { role: "user", content: userPrompt }]);
     setInput("");
 
-    // If collecting project details
     if (pendingProposal && !pendingProposal.details) {
-      // The user just entered project details
       setPendingProposal(prev => prev ? { ...prev, details: userPrompt } : null);
       if (pendingProposal && pendingProposal.freelancerWallet) {
-        // Send proposal automatically
         await fetch("/api/send-proposal", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -91,7 +83,6 @@ export default function Agent() {
       }
     }
 
-    // Detect 'send project proposal to @username' or 'send project invitation to @username' or 'send project invitation to name'
     const proposalMatch = userPrompt.match(/send project (proposal|invitation) to @?(\w+)/i);
     if (proposalMatch) {
       const usernameOrName = proposalMatch[2].toLowerCase();
@@ -100,7 +91,6 @@ export default function Agent() {
         freelancer = allFreelancers.find(f => f.name.toLowerCase().split(' ')[0] === usernameOrName);
       }
       if (freelancer && pendingProposal && pendingProposal.details) {
-        // Send proposal automatically using freelancer's wallet address
         await fetch("/api/send-proposal", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -119,7 +109,6 @@ export default function Agent() {
         inputRef.current?.focus();
         return;
       }
-      // If project details are not yet collected, store freelancer info and prompt for details
       if (freelancer && (!pendingProposal || !pendingProposal.details)) {
         setPendingProposal({ details: "", freelancerName: freelancer.name, freelancerWallet: freelancer.wallet });
         setChat(prev => [
@@ -144,7 +133,6 @@ export default function Agent() {
         if (isScoutingRequest(userPrompt)) {
           const names = extractFreelancerNames(data.agentMessage);
           const matched = allFreelancers.filter(f => names.includes(f.name));
-          // Short summary for chat (2 lines per freelancer)
           const summary = matched.map(f => `• ${f.name} (${f.role}): ${f.desc.split(".")[0]}. Projects: ${f.projects}, Stars: ${f.stars}`).join("\n");
           setChat((prev) => [
             ...prev,
@@ -171,7 +159,7 @@ export default function Agent() {
           ...prev,
           {
             role: "agent",
-            content: "Sorry, I couldn't process your request right now. Please try again later.",
+            content: "Sorry, I couldn&apos;t process your request right now. Please try again later.",
           },
         ]);
       }
@@ -194,9 +182,7 @@ export default function Agent() {
     }
   };
 
-  // Generate a fun fact for a freelancer
   function getFunFact(f: Freelancer) {
-    // Simple fun fact logic: pick a highlight from their description or stats
     if (f.projects >= 25) return `Has completed over ${f.projects} projects!`;
     if (f.stars >= 4.9) return `Rated among the top with ${f.stars} stars!`;
     if (f.perfection >= 99) return `Nearly perfect with a ${f.perfection}% score!`;
@@ -221,16 +207,12 @@ export default function Agent() {
       return {
         ...prev,
         [freelancer.username]: [
-          { from: "agent", text: `Hi @${freelancer.username}, I have a project proposal for you! Please review the details and let me know if you're interested.` }
+          { from: "agent", text: `Hi @${freelancer.username}, I have a project proposal for you! Please review the details and let me know if you&apos;re interested.` }
         ]
       };
     });
     setTimeout(() => privateInputRef.current?.focus(), 100);
     setShowModal(false);
-  }
-
-  function handleMessageClick(freelancer: Freelancer) {
-    openPrivateChat(freelancer);
   }
 
   function handleSendPrivateMessage() {
@@ -256,7 +238,6 @@ export default function Agent() {
     <>
       <Navbar />
       <div className="min-h-screen bg-gray-900 flex justify-center items-center">
-        {/* Floating button to open last private chat */}
         {Object.keys(privateChats).length > 0 && privateChatFreelancer && (
           <button
             className="fixed right-6 bottom-6 z-50 bg-cyan-500 hover:bg-cyan-600 text-white rounded-full shadow-lg p-4 flex items-center justify-center"
@@ -267,7 +248,6 @@ export default function Agent() {
             <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3C7.03 3 3 6.82 3 11c0 1.61.62 3.09 1.7 4.36-.13.5-.46 1.7-.7 2.64-.09.33.23.63.56.54.96-.25 2.19-.6 2.7-.74C8.91 18.38 10.41 19 12 19c4.97 0 9-3.82 9-8s-4.03-8-9-8Zm0 14c-1.41 0-2.77-.41-3.91-1.18a1 1 0 0 0-.8-.13c-.36.1-1.01.28-1.7.46.18-.7.36-1.36.45-1.7a1 1 0 0 0-.13-.8C4.41 13.77 4 12.41 4 11c0-3.31 3.58-6 8-6s8 2.69 8 6-3.58 6-8 6Z"/></svg>
           </button>
         )}
-        {/* Private Chat Side Panel */}
         {privateChatOpen && privateChatFreelancer && (
           <div className="fixed top-0 right-0 h-full w-[400px] bg-gray-800 shadow-2xl z-50 flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-gray-700">
@@ -300,7 +280,6 @@ export default function Agent() {
             </div>
           </div>
         )}
-        {/* Modal for freelancer profile *//*popup windown of the info*/}
         {showModal && selectedFreelancer && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-40">
             <div className="bg-gray-800 rounded-xl p-6 w-96">
@@ -318,7 +297,7 @@ export default function Agent() {
         )}
         <div className="w-full max-w-2xl flex flex-col">
           <div className="bg-gray-800 rounded-t-2xl p-6 min-h-[220px] flex flex-col items-center">
-            <div className="text-3xl font-bold text-cyan-400 mb-2 text-center">Hi, I'm CryptoTasks Scout.</div>
+            <div className="text-3xl font-bold text-cyan-400 mb-2 text-center">Hi, I&apos;m CryptoTasks Scout.</div>
             <div className="text-lg text-gray-200 mb-8 text-center">Ask Scout to find the best freelancers for your needs.</div>
             <div className="w-full flex flex-col gap-4 mt-4">
               {chat.map((msg, i) => {
