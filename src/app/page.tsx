@@ -261,9 +261,6 @@ function GatedHome() {
         <p className="text-xl font-semibold mb-8 text-left" style={{ color: '#ff4fcf' }}>
           Find and hire the top freelancers on chain
         </p>
-        <ShadowButtonWrapper>
-          <button className="mb-8 ml-40">Login</button>
-        </ShadowButtonWrapper>
         <StyledConnectWrapper>
           <div className="connect-btn-row gap-8">
             <div className="button-with-arrow">
