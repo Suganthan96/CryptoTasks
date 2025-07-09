@@ -33,10 +33,10 @@ export default function Navbar() {
   };
 
   const navItems = [
-    { href: '/freelancers', label: 'Freelancers', icon: '👥', color: 'from-blue-400 to-cyan-400' },
-    { href: '/agent', label: 'Agent', icon: '🤖', color: 'from-purple-400 to-pink-400' },
-    { href: '/profile', label: 'Profile', icon: '👤', color: 'from-green-400 to-emerald-400' },
-    { href: '/chat', label: 'Chat', icon: '💬', onClick: handleChatClick, color: 'from-orange-400 to-red-400' }
+    { href: '/freelancers', label: 'Freelancers', color: 'from-blue-400 to-cyan-400' },
+    { href: '/agent', label: 'Agent', color: 'from-purple-400 to-pink-400' },
+    { href: '/profile', label: 'Profile', color: 'from-green-400 to-emerald-400' },
+    { href: '/chat', label: 'Chat', onClick: handleChatClick, color: 'from-orange-400 to-red-400' }
   ];
 
   const isActive = (href: string) => pathname === href;
@@ -435,9 +435,7 @@ export default function Navbar() {
                     onClick={item.onClick}
                     className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
                   >
-                    <span className="nav-icon" style={{ position: 'relative' }}>
-                      {item.icon}
-                    </span>
+                   
                     {item.label}
                   </a>
                 ))}
@@ -483,9 +481,6 @@ export default function Navbar() {
                     animation: isMobileMenuOpen ? `slideInLeft 0.4s ease forwards` : 'none'
                   }}
                 >
-                  <span className="nav-icon" style={{ position: 'relative' }}>
-                    {item.icon}
-                  </span>
                   {item.label}
                 </a>
               ))}
