@@ -89,14 +89,6 @@ make docs
 make local-docs
 ```
 
-### TypeScript Development
-
-#### Prerequisites
-
-- [Development Setup](./typescript/CONTRIBUTING.md#development-setup)
-- Node.js v22.x or higher
-- pnpm 10.x or higher
-
 #### Setup
 
 ```bash
