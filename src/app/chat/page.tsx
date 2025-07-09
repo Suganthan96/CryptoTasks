@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import ChatBox from "./ChatBox";
 import Navbar from "../components/Navbar";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const ROLE_KEY = "user_role";
 
@@ -31,8 +32,17 @@ function RoleSelector({ onSelect }: { onSelect: (role: "client" | "freelancer") 
 export default function ChatPage() {
   const [role, setRole] = useState<"client" | "freelancer" | null>(null);
   const [showSelector, setShowSelector] = useState(false);
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const initialRole = searchParams?.get('role');
 
   useEffect(() => {
+    // Check query param for role first
+    if (initialRole === "client" || initialRole === "freelancer") {
+      setRole(initialRole);
+      localStorage.setItem(ROLE_KEY, initialRole);
+      setShowSelector(false);
+      return;
+    }
     // Check localStorage for role
     const savedRole = typeof window !== "undefined" ? localStorage.getItem(ROLE_KEY) : null;
     if (savedRole === "client" || savedRole === "freelancer") {

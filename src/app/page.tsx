@@ -283,7 +283,9 @@ function GatedHome() {
                   return (
                     <StyledWrapper>
                       <StyledButton
-                        onClick={connected ? openAccountModal : openConnectModal}
+                        onClick={connected
+                          ? () => router.push('/chat?role=freelancer')
+                          : openConnectModal}
                         type="button"
                         disabled={!ready}
                       >
@@ -314,7 +316,9 @@ function GatedHome() {
                   return (
                     <StyledWrapper>
                       <StyledButton
-                        onClick={connected ? openAccountModal : openConnectModal}
+                        onClick={connected
+                          ? () => router.push('/chat?role=client')
+                          : openConnectModal}
                         type="button"
                         disabled={!ready}
                       >
