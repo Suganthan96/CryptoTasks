@@ -1,120 +1,16 @@
+
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { WagmiConfig, useAccount, http } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, sepolia } from "wagmi/chains";
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
-import { RainbowKitProvider, ConnectButton } from "@rainbow-me/rainbowkit";
-import '@rainbow-me/rainbowkit/styles.css';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useRouter, usePathname } from "next/navigation";
 import styled from 'styled-components';
 import React from 'react';
 
-const config = getDefaultConfig({
-  appName: "CryptoTasks",
-  projectId: "64f747071044dfdaf878267ba0e66076",
-  chains: [mainnet, polygon, optimism, arbitrum, sepolia],
-  transports: {
-    [mainnet.id]: http(),
-    [polygon.id]: http(),
-    [optimism.id]: http(),
-    [arbitrum.id]: http(),
-    [sepolia.id]: http(),
-  },
-});
-
-const queryClient = new QueryClient();
-
-const StyledWrapper = styled.div`
-  .button {
-    position: relative;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-    padding-block: 0.5rem;
-    padding-inline: 1.25rem;
-    background-color: rgb(0 107 179);
-    border-radius: 9999px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    gap: 10px;
-    font-weight: bold;
-    border: 3px solid #ffffff4d;
-    outline: none;
-    overflow: hidden;
-    font-size: 15px;
-    cursor: pointer;
-  }
-
-  .icon {
-    width: 24px;
-    height: 24px;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .button:hover {
-    transform: scale(1.05);
-    border-color: #fff9;
-  }
-
-  .button:hover .icon {
-    transform: translate(4px);
-  }
-
-  .button:hover::before {
-    animation: shine 1.5s ease-out infinite;
-  }
-
-  .button::before {
-    content: "";
-    position: absolute;
-    width: 100px;
-    height: 100%;
-    background-image: linear-gradient(
-      120deg,
-      rgba(255, 255, 255, 0) 30%,
-      rgba(255, 255, 255, 0.8),
-      rgba(255, 255, 255, 0) 70%
-    );
-    top: 0;
-    left: -100px;
-    opacity: 0.6;
-  }
-
-  @keyframes shine {
-    0% {
-      left: -100px;
-    }
-
-    60% {
-      left: 100%;
-    }
-
-    to {
-      left: 100%;
-    }
-  }
-`;
-
-const StyledConnectWrapper = styled.div`
-  .connect-btn-row {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: fit-content;
-  }
-  .button-with-arrow {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-`;
-
-const StyledButton = styled.button`
+const GlowingButton = styled.button`
   --glow-color: #ed008b;
-  --glow-spread-color: rgba(237,0,139,0.7);
+  --glow-spread-color: rgba(237, 0, 139, 0.7);
   --enhanced-glow-color: #ff4fcf;
   --btn-color: #1a0020;
   border: .25em solid var(--glow-color);
@@ -161,43 +57,35 @@ const StyledButton = styled.button`
   }
 `;
 
-const ShadowButtonWrapper = styled.div`
-  button {
-    transition: all 0.5s;
-    font-size: 17px;
-    padding: 1ch 2ch;
-    background-color: white;
-    color: #000;
-    cursor: pointer;
-    border: none;
-    border-radius: 2px;
-    box-shadow:
-      2px 2px 0px hsl(0, 0%, 90%),
-      4px 4px 0px hsl(0, 0%, 80%),
-      6px 6px 0px hsl(0, 0%, 70%),
-      8px 8px 0px hsl(0, 0%, 60%),
-      10px 10px 0px hsl(0, 0%, 50%),
-      12px 12px 0px hsl(0, 0%, 40%),
-      14px 14px 0px hsl(0, 0%, 30%),
-      16px 16px 0px hsl(0, 0%, 20%),
-      18px 18px 0px hsl(0, 0%, 10%);
+const StyledConnectWrapper = styled.div`
+  .connect-btn-row {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: fit-content;
   }
-
-  button:hover {
-    background-color: hsl(0, 0%, 50%);
-    color: #fff;
-    box-shadow: none;
+  .button-with-arrow {
+    position: relative;
+    display: flex;
+    align-items: center;
   }
 `;
+
+// Add this to ensure styles are rendered on server
+if (typeof window === 'undefined') {
+  React.useLayoutEffect = React.useEffect;
+}
 
 function GatedHome() {
   const { isConnected } = useAccount();
   const router = useRouter();
   const vantaRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const hasNavigated = useRef(false);
 
   useEffect(() => {
-    if (isConnected && pathname !== "/freelancers") {
+    if (isConnected && pathname !== "/freelancers" && !hasNavigated.current) {
+      hasNavigated.current = true;
       router.push("/freelancers");
     }
   }, [isConnected, pathname, router]);
@@ -254,12 +142,12 @@ function GatedHome() {
       <div ref={vantaRef} style={{ position: "fixed", inset: 0, zIndex: -1 }} />
       <div className="min-h-screen bg-transparent flex flex-col items-start justify-center px-4 ml-40">
         <h1 className="text-5xl md:text-6xl font-extrabold text-left mb-8 text-white">
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-            CryptoLance
+          <span className="bg-gradient-to-r from-cyan-400 via-blue-800 to-red-600 bg-clip-text text-transparent">
+            CryptoTasks
           </span>
         </h1>
         <p className="text-xl font-semibold mb-8 text-left" style={{ color: '#ff4fcf' }}>
-          Find and hire the top freelancers on chain
+          Fully Autonomous Freelancers Hiring Platform
         </p>
         <StyledConnectWrapper>
           <div className="connect-btn-row gap-8">
@@ -269,7 +157,6 @@ function GatedHome() {
                   account,
                   chain,
                   openAccountModal,
-                  openChainModal,
                   openConnectModal,
                   authenticationStatus,
                   mounted,
@@ -281,15 +168,13 @@ function GatedHome() {
                     chain &&
                     (!authenticationStatus || authenticationStatus === "authenticated");
                   return (
-                    <StyledWrapper>
-                      <StyledButton
-                        onClick={connected ? openAccountModal : openConnectModal}
-                        type="button"
-                        disabled={!ready}
-                      >
-                        As Freelancer
-                      </StyledButton>
-                    </StyledWrapper>
+                    <GlowingButton
+                      onClick={connected ? openAccountModal : openConnectModal}
+                      type="button"
+                      disabled={!ready}
+                    >
+                      As Freelancer
+                    </GlowingButton>
                   );
                 }}
               </ConnectButton.Custom>
@@ -300,7 +185,6 @@ function GatedHome() {
                   account,
                   chain,
                   openAccountModal,
-                  openChainModal,
                   openConnectModal,
                   authenticationStatus,
                   mounted,
@@ -312,15 +196,13 @@ function GatedHome() {
                     chain &&
                     (!authenticationStatus || authenticationStatus === "authenticated");
                   return (
-                    <StyledWrapper>
-                      <StyledButton
-                        onClick={connected ? openAccountModal : openConnectModal}
-                        type="button"
-                        disabled={!ready}
-                      >
-                        As Client
-                      </StyledButton>
-                    </StyledWrapper>
+                    <GlowingButton
+                      onClick={connected ? openAccountModal : openConnectModal}
+                      type="button"
+                      disabled={!ready}
+                    >
+                      As Client
+                    </GlowingButton>
                   );
                 }}
               </ConnectButton.Custom>
@@ -333,15 +215,5 @@ function GatedHome() {
 }
 
 export default function HomePage() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiConfig config={config}>
-        <RainbowKitProvider>
-          <GatedHome />
-        </RainbowKitProvider>
-      </WagmiConfig>
-    </QueryClientProvider>
-  )
   return <GatedHome />;
 }
-
