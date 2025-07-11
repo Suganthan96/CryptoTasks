@@ -79,9 +79,9 @@ if (typeof window === 'undefined') {
 function GatedHome() {
   const { isConnected } = useAccount();
   const router = useRouter();
-  const vantaRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const hasNavigated = useRef(false);
+  const vantaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isConnected && pathname !== "/freelancers" && !hasNavigated.current) {
@@ -90,30 +90,30 @@ function GatedHome() {
     }
   }, [isConnected, pathname, router]);
 
+  // Vanta Birds background animation
   useEffect(() => {
     let vantaEffect: any = null;
     let threeScript: HTMLScriptElement | null = null;
     let vantaScript: HTMLScriptElement | null = null;
-    // Dynamically load three.js and vanta.globe
     const loadVanta = async () => {
       if (typeof window !== "undefined" && vantaRef.current) {
         // Load three.js
         if (!(window as any).THREE) {
           threeScript = document.createElement("script");
-          threeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js";
+          threeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
           threeScript.async = true;
           document.body.appendChild(threeScript);
           await new Promise(res => { threeScript!.onload = res; });
         }
-        // Load vanta.globe
+        // Load vanta.birds
         vantaScript = document.createElement("script");
-        vantaScript.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js";
+        vantaScript.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js";
         vantaScript.async = true;
         document.body.appendChild(vantaScript);
         await new Promise(res => { vantaScript!.onload = res; });
-        // Initialize VANTA
-        if ((window as any).VANTA && (window as any).VANTA.GLOBE) {
-          vantaEffect = (window as any).VANTA.GLOBE({
+        // Initialize VANTA Birds
+        if ((window as any).VANTA && (window as any).VANTA.BIRDS) {
+          vantaEffect = (window as any).VANTA.BIRDS({
             el: vantaRef.current,
             mouseControls: true,
             touchControls: true,
@@ -122,9 +122,7 @@ function GatedHome() {
             minWidth: 200.00,
             scale: 1.00,
             scaleMobile: 1.00,
-            color: 0xed008b,
-            size: 1.30,
-            backgroundColor: 0x0
+            birdSize: 2.5
           });
         }
       }
@@ -139,11 +137,11 @@ function GatedHome() {
 
   return (
     <>
-      <div ref={vantaRef} style={{ position: "fixed", inset: 0, zIndex: -1 }} />
+      <div ref={vantaRef} id="vanta-bg" style={{ position: "fixed", inset: 0, zIndex: -1 }} />
       <div className="min-h-screen bg-transparent flex flex-col items-start justify-center px-4 ml-40">
         <h1 className="text-5xl md:text-6xl font-extrabold text-left mb-8 text-white">
           <span className="bg-gradient-to-r from-cyan-400 via-blue-800 to-red-600 bg-clip-text text-transparent">
-            CryptoTasks
+            Cryptolance
           </span>
         </h1>
         <p className="text-xl font-semibold mb-8 text-left" style={{ color: '#ff4fcf' }}>
@@ -173,7 +171,7 @@ function GatedHome() {
                       type="button"
                       disabled={!ready}
                     >
-                      As Freelancer
+                      Freelancer
                     </GlowingButton>
                   );
                 }}
@@ -201,7 +199,7 @@ function GatedHome() {
                       type="button"
                       disabled={!ready}
                     >
-                      As Client
+                      Client
                     </GlowingButton>
                   );
                 }}
