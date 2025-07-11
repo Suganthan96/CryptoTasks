@@ -44,7 +44,6 @@ function ProposalMessage({ message, isFromUser }: {
       }`}>
         <div className="flex items-center mb-3">
           <div className="flex items-center bg-yellow-500/20 rounded-full px-3 py-1">
-            <span className="text-yellow-300 font-bold text-sm mr-2">🤖</span>
             <span className="text-yellow-300 font-semibold text-sm">SCOUT AGENT</span>
           </div>
           <span className="ml-3 px-3 py-1 rounded-full text-xs bg-green-500/20 text-green-300 font-medium">
@@ -221,7 +220,7 @@ function ChatWindow({ user, peer, chat, onSend }: ChatWindowProps) {
           <div className="flex items-center space-x-4">
             <div className="flex-1 relative">
               <input
-                className="w-full bg-gray-800/80 text-gray-100 rounded-2xl px-6 py-4 pr-12 outline-none placeholder-gray-400 border border-gray-700/50 focus:border-cyan-500/50 focus:bg-gray-800 transition-all duration-300 text-sm"
+                className="w-full bg-gray-800/80 text-gray-100 rounded-2xl px-6 py-4 outline-none placeholder-gray-400 border border-gray-700/50 focus:border-cyan-500/50 focus:bg-gray-800 transition-all duration-300 text-sm"
                 placeholder="Type your message..."
                 value={input}
                 onChange={e => setInput(e.target.value)}
@@ -232,14 +231,6 @@ function ChatWindow({ user, peer, chat, onSend }: ChatWindowProps) {
                   }
                 }}
               />
-              <button
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-cyan-400 transition-colors duration-200"
-                onClick={handleSend}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-              </button>
             </div>
             <button
               className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white px-6 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium"

@@ -240,11 +240,7 @@ function ProfileContent() {
           connect={connect}
           connectors={connectors}
         />
-        
-        {/* Footer */}
-        <div className="mt-8 text-center text-slate-500 text-sm relative z-10">
-          <p>Powered by Web3 Technology</p>
-        </div>
+    
       </div>
       
       <style jsx>{`

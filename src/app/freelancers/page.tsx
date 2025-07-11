@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Navbar from "../components/Navbar";
 import { freelancers } from "./data";
 
@@ -16,6 +16,17 @@ interface CardProps {
 
 const Card = ({ name, role, desc, projects, stars, perfection, username, wallet }: CardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+
+  // Generate static values that won't change on re-render
+  const staticValues = useMemo(() => ({
+    rate: (Math.random() * 0.8 + 0.2).toFixed(2),
+    responseTime: Math.floor(Math.random() * 4) + 1,
+    location: ['USA', 'Canada', 'UK', 'Germany', 'Australia', 'Singapore'][Math.floor(Math.random() * 6)],
+    skills: role.includes('Developer') ? 'React, Node.js, TypeScript' :
+            role.includes('Designer') ? 'Figma, Adobe XD, Sketch' :
+            role.includes('Engineer') ? 'Python, AWS, Docker' :
+            'React, API, Database'
+  }), [role]);
 
   return (
     <>
@@ -46,52 +57,6 @@ const Card = ({ name, role, desc, projects, stars, perfection, username, wallet 
           cursor: pointer;
         }
 
-        .freelancer-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(135deg, 
-            rgba(99, 102, 241, 0.1) 0%, 
-            rgba(168, 85, 247, 0.1) 25%,
-            rgba(236, 72, 153, 0.1) 50%,
-            rgba(59, 130, 246, 0.1) 75%,
-            rgba(16, 185, 129, 0.1) 100%);
-          border-radius: 24px;
-          opacity: 0;
-          transition: opacity 0.5s ease;
-          z-index: 1;
-        }
-
-        .freelancer-card::after {
-          content: '';
-    position: absolute;
-          top: -2px;
-          left: -2px;
-          right: -2px;
-          bottom: -2px;
-          background: linear-gradient(135deg, 
-            #6366f1 0%, 
-            #a855f7 25%, 
-            #ec4899 50%, 
-            #3b82f6 75%, 
-            #10b981 100%);
-          border-radius: 26px;
-          opacity: 0;
-          transition: opacity 0.5s ease;
-          z-index: -1;
-        }
-
-        .freelancer-card:hover::before {
-          opacity: 1;
-        }
-
-        .freelancer-card:hover::after {
-          opacity: 1;
-        }
-
         .freelancer-card:hover {
           transform: translateY(-12px) scale(1.03);
           box-shadow: 
@@ -104,7 +69,7 @@ const Card = ({ name, role, desc, projects, stars, perfection, username, wallet 
           position: relative;
           z-index: 2;
           height: 100%;
-    display: flex;
+          display: flex;
           flex-direction: column;
         }
 
@@ -136,8 +101,8 @@ const Card = ({ name, role, desc, projects, stars, perfection, username, wallet 
           font-size: 0.95rem;
           font-weight: 600;
           margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
+          display: flex;
+          align-items: center;
           gap: 0.5rem;
           padding: 0.25rem 0.75rem;
           background: rgba(59, 130, 246, 0.1);
@@ -194,9 +159,9 @@ const Card = ({ name, role, desc, projects, stars, perfection, username, wallet 
 
         .stat-item::before {
           content: '';
-    position: absolute;
+          position: absolute;
           top: 0;
-    left: 0;
+          left: 0;
           right: 0;
           bottom: 0;
           background: linear-gradient(135deg, 
@@ -270,9 +235,9 @@ const Card = ({ name, role, desc, projects, stars, perfection, username, wallet 
 
         .detail-item::before {
           content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
+          position: absolute;
+          top: 0;
+          left: 0;
           right: 0;
           bottom: 0;
           background: linear-gradient(135deg, 
@@ -479,25 +444,20 @@ const Card = ({ name, role, desc, projects, stars, perfection, username, wallet 
             <div className="detail-item">
               <div className="detail-label">💰 Rate</div>
               <div className="detail-value eth-rate">
-                {(Math.random() * 0.8 + 0.2).toFixed(2)} ETH
+                {staticValues.rate} ETH
               </div>
             </div>
             <div className="detail-item">
               <div className="detail-label">⚡ Response</div>
-              <div className="detail-value">{Math.floor(Math.random() * 4) + 1}h avg</div>
+              <div className="detail-value">{staticValues.responseTime}h avg</div>
             </div>
             <div className="detail-item">
               <div className="detail-label">🌍 Location</div>
-              <div className="detail-value">{['USA', 'Canada', 'UK', 'Germany', 'Australia', 'Singapore'][Math.floor(Math.random() * 6)]}</div>
+              <div className="detail-value">{staticValues.location}</div>
             </div>
             <div className="detail-item">
               <div className="detail-label">🔧 Skills</div>
-              <div className="detail-value">{
-                role.includes('Developer') ? 'React, Node.js, TypeScript' :
-                role.includes('Designer') ? 'Figma, Adobe XD, Sketch' :
-                role.includes('Engineer') ? 'Python, AWS, Docker' :
-                'React, API, Database'
-              }</div>
+              <div className="detail-value">{staticValues.skills}</div>
             </div>
           </div>
         </div>
