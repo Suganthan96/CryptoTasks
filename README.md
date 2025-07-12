@@ -2,7 +2,11 @@
 
 An intelligent freelance marketplace powered by AI agents that automatically match clients with the best freelancers and handles secure payments on the UMI Network blockchain.
 
-## 🎯 Project Overview
+<p align="center">
+  <img src="public/logo.png" alt="CryptoLance Banner" width="800"/>
+</p>
+
+##  Project Overview
 
 Cryptlance revolutionizes freelance work by combining AI-powered matchmaking with blockchain-based automatic payments. The platform uses two intelligent agents:
 
@@ -11,29 +15,28 @@ Cryptlance revolutionizes freelance work by combining AI-powered matchmaking wit
 
 Built on the UMI Network (EVM-compatible) for fast, secure, and low-cost transactions.
 
-## 🚀 Key Features
+##  Key Features
 
-### 🤖 AI-Powered Matching
+###  AI-Powered Matching
 - **Intelligent Freelancer Discovery**: Scout Agent analyzes project requirements and finds the best-suited freelancers
 - **Automatic Proposal Generation**: AI generates and sends personalized proposals to clients
 - **Smart Recommendations**: Machine learning algorithms improve matching accuracy over time
 
-### 💬 Seamless Communication
+###  Seamless Communication
 - **Real-time Chat**: Direct messaging between clients and freelancers
 - **Project Updates**: Automatic status updates and milestone tracking
-- **File Sharing**: Secure document and asset exchange
 
-### 💰 Automated Payments
+###  Automated Payments
 - **Escrow System**: Funds are held securely until work completion
 - **Automatic Settlement**: Instant fund release when client confirms work completion
 - **UMI Network Integration**: Fast, low-cost transactions on EVM-compatible blockchain
 
-### 🔐 Secure & Transparent
+###  Secure & Transparent
 - **Smart Contract Escrow**: Trustless payment system
 - **Dispute Resolution**: Built-in mediation system
 - **Transaction History**: Complete audit trail on blockchain
 
-## 🏗️ System Architecture
+##  System Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -58,7 +61,7 @@ Built on the UMI Network (EVM-compatible) for fast, secure, and low-cost transac
                    └─────────────────┘
 ```
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Frontend
 - **Next.js 14** - React framework with App Router
@@ -82,7 +85,7 @@ Built on the UMI Network (EVM-compatible) for fast, secure, and low-cost transac
 - **Solidity** - Smart contract development
 - **Web3 Libraries** - Blockchain integration
 
-## 📋 Prerequisites
+##  Prerequisites
 
 - **Node.js** (v18 or higher)
 - **Python** (v3.10 or higher)
@@ -90,7 +93,7 @@ Built on the UMI Network (EVM-compatible) for fast, secure, and low-cost transac
 - **UMI Network wallet** (MetaMask compatible)
 - **Git**
 
-## 🔧 Installation & Setup
+##  Installation & Setup
 
 ### 1. Clone the Repository
 
@@ -159,7 +162,7 @@ python -m uvicorn src.app.agent.agent:app --reload --host 0.0.0.0 --port 8000
 python send_umi_work_done.py
 ```
 
-## 🔐 Environment Variables Reference
+##  Environment Variables Reference
 
 | Variable | Description | Required | Example |
 |----------|-------------|----------|---------|
@@ -167,10 +170,8 @@ python send_umi_work_done.py
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
 | `GROQ_API_KEY` | GROQ AI API key | Yes | `gsk_...` |
 | `PRIVATE_KEY` | UMI Network private key | Yes | `0x...` |
-| `UMI_NETWORK_RPC` | UMI Network RPC endpoint | Yes | `https://node-mainnet-1.umi.top` |
-| `ESCROW_CONTRACT_ADDRESS` | Deployed escrow contract | Yes | `0x...` |
 
-## 🚀 How It Works
+##  How It Works
 
 ### 1. Client Posts Project
 ```
@@ -192,7 +193,7 @@ Client reviews proposals → Chats with freelancers → Selects freelancer → F
 Freelancer delivers work → Client reviews → Says "work done" → Settlement Agent releases funds
 ```
 
-## 🤖 Agent Workflows
+##  Agent Workflows
 
 ### Scout Agent Features
 - **Project Analysis**: Uses GROQ AI to understand project requirements
@@ -206,11 +207,10 @@ Freelancer delivers work → Client reviews → Says "work done" → Settlement 
 - **Automatic Release**: Triggers payment when work is confirmed
 - **Dispute Handling**: Manages payment disputes and resolutions
 
-## 🌐 UMI Network Integration
+##  UMI Network Integration
 
 ### Smart Contract Features
 - **Escrow System**: Secure fund holding until completion
-- **Multi-signature Support**: Additional security for large projects
 - **Dispute Resolution**: On-chain arbitration system
 - **Fee Management**: Transparent fee structure
 
@@ -220,10 +220,9 @@ Freelancer delivers work → Client reviews → Says "work done" → Settlement 
 - **EVM Compatible**: Works with existing Ethereum tools
 - **Scalable**: High throughput for mass adoption
 
-## 📱 User Interface
+##  User Interface
 
 ### Client Dashboard
-- **Project Management**: Create, edit, and track projects
 - **Freelancer Proposals**: Review AI-generated matches
 - **Chat Interface**: Direct communication with freelancers
 - **Payment Tracking**: Monitor escrow and payments
@@ -231,10 +230,9 @@ Freelancer delivers work → Client reviews → Says "work done" → Settlement 
 ### Freelancer Dashboard
 - **Project Discovery**: Browse available projects
 - **Proposal Management**: Review AI-sent proposals
-- **Work Submission**: Upload deliverables
 - **Earnings Tracking**: Monitor payments and balances
 
-## 🔧 Development
+##  Development
 
 ### Frontend Development
 ```bash
@@ -261,7 +259,7 @@ python send_umi_work_done.py
 
 ```
 
-## 🛡️ Security
+##  Security
 
 ### Best Practices
 - **Private Key Security**: Never commit private keys
@@ -277,5 +275,5 @@ python send_umi_work_done.py
 - **Dispute Resolution**: Built-in arbitration system
 
 
-**Built with ❤️ by team Crytolance**
+**Built with ❤️ by team Cryptolance**
 
