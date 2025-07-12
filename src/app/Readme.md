@@ -1,6 +1,6 @@
-# CryptoTasks App Directory Documentation
+# Crptolance App Directory Documentation
 
-This document provides a comprehensive overview of the `src/app` directory in the CryptoTasks project. It details the purpose, structure, and logic of each file and folder, serving as a guide for developers and contributors.
+This document provides a comprehensive overview of the `src/app` directory in the Cryptolance project. It details the purpose, structure, and logic of each file and folder, serving as a guide for developers and contributors.
 
 ---
 

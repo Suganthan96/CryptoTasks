@@ -1,4 +1,4 @@
-# CryptoTasks Agent & Chat System
+# Cryptolance Agent & Chat System
 
 This project is a multi-agent platform for scouting freelancers, sending project proposals, and enabling real-time chat between clients and freelancers. It uses Next.js (frontend), FastAPI (backend), and Supabase (for real-time chat and message storage).
 
