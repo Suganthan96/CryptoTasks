@@ -9,9 +9,9 @@ import styled from 'styled-components';
 import React from 'react';
 
 const GlowingButton = styled.button`
-  --glow-color: #ed008b;
-  --glow-spread-color: rgba(237, 0, 139, 0.7);
-  --enhanced-glow-color: #ff4fcf;
+  --glow-color: #fff;
+  --glow-spread-color: rgba(255,255,255,0.7);
+  --enhanced-glow-color: #fff;
   --btn-color: #1a0020;
   border: .25em solid var(--glow-color);
   padding: 1em 3em;
@@ -138,13 +138,13 @@ function GatedHome() {
   return (
     <>
       <div ref={vantaRef} id="vanta-bg" style={{ position: "fixed", inset: 0, zIndex: -1 }} />
-      <div className="min-h-screen bg-transparent flex flex-col items-start justify-center px-4 ml-40">
-        <h1 className="text-5xl md:text-6xl font-extrabold text-left mb-8 text-white">
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-800 to-red-600 bg-clip-text text-transparent">
+      <div className="min-h-screen bg-transparent flex flex-col items-start justify-center px-4 ml-40" style={{ color: '#fff' }}>
+        <h1 className="text-5xl md:text-6xl font-extrabold text-left mb-8" style={{ color: '#fff' }}>
+          <span style={{ color: '#fff' }}>
             Cryptolance
           </span>
         </h1>
-        <p className="text-xl font-semibold mb-8 text-left" style={{ color: '#ff4fcf' }}>
+        <p className="text-xl font-semibold mb-8 text-left" style={{ color: '#fff' }}>
           Fully Autonomous Freelancers Hiring Platform
         </p>
         <StyledConnectWrapper>
@@ -215,4 +215,3 @@ function GatedHome() {
 export default function HomePage() {
   return <GatedHome />;
 }
-//deploy fix i think !!
