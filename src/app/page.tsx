@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -54,6 +53,82 @@ const GlowingButton = styled.button`
     box-shadow: 0 0 0.6em .25em var(--glow-color),
            0 0 2.5em 2em var(--glow-spread-color),
            inset 0 0 .5em .25em var(--glow-color);
+  }
+`;
+
+const LogoContainer = styled.div`
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  
+  &:hover {
+    transform: translateY(-8px) scale(1.08);
+  }
+  
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 140%;
+    height: 140%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.08) 30%,
+      transparent 70%
+    );
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  &:hover::before {
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+  
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(255, 255, 255, 0.12) 40%,
+      transparent 70%
+    );
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.7;
+  }
+  
+  &:hover::after {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 1;
+  }
+`;
+
+const LogoImage = styled.img`
+  width: 380px;
+  height: 380px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4))
+          drop-shadow(0 0 30px rgba(255, 255, 255, 0.2));
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  margin-bottom: 0;
+  ${LogoContainer}:hover & {
+    filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.7)) 
+            drop-shadow(0 0 50px rgba(255, 255, 255, 0.5))
+            drop-shadow(0 0 75px rgba(255, 255, 255, 0.3));
   }
 `;
 
@@ -138,8 +213,20 @@ function GatedHome() {
   return (
     <>
       <div ref={vantaRef} id="vanta-bg" style={{ position: "fixed", inset: 0, zIndex: -1 }} />
-      <div className="min-h-screen bg-transparent flex flex-col items-start justify-center px-4 ml-40" style={{ color: '#fff' }}>
-        <h1 className="text-5xl md:text-6xl font-extrabold text-left mb-8" style={{ color: '#fff' }}>
+      <div className="min-h-screen bg-transparent flex flex-col items-start px-4 ml-40" style={{ color: '#fff', marginTop: '8rem' }}>
+        {/* Logo */}
+        <LogoContainer>
+          <LogoImage 
+            src="/logo.png" 
+            alt="Cryptolance Logo" 
+            onError={(e) => {
+              console.error('Logo not found. Make sure logo.png is in your public folder');
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        </LogoContainer>
+        
+        <h1 className="text-5xl md:text-6xl font-extrabold text-left mb-8" style={{ color: '#fff', marginTop: '-6.5rem' }}>
           <span style={{ color: '#fff' }}>
             Cryptolance
           </span>
