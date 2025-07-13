@@ -3,7 +3,7 @@
 An intelligent freelance marketplace powered by AI agents that automatically match clients with the best freelancers and handles secure payments on the UMI Network blockchain.
 
 <p align="center">
-  <img src="public/final_logo.png" alt="CryptoLance Banner" width="800"/>
+  <img src="public/final_logo.png" alt="CryptoLance Banner" width="400"/>
 </p>
 
 ##  Project Overview
