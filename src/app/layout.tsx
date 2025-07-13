@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CryptoTasks",
+  title: "Cryptolance",
   description: "A Web3-powered freelance platform",
 };
 
