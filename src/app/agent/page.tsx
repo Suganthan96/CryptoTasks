@@ -5,6 +5,7 @@ import { freelancers as allFreelancers } from "../freelancers/data";
 import Navbar from "../components/Navbar";
 import { useAccount } from "wagmi";
 import ClientProviders from "../components/ClientProviders";
+import { sendProposalTx } from '../../lib/umiProposalManager';
 
 interface ChatMessage {
   role: "user" | "agent" | "cards";
@@ -70,7 +71,20 @@ export default function Agent() {
       // The user just entered project details
       setPendingProposal(prev => prev ? { ...prev, details: userPrompt } : null);
       if (pendingProposal && pendingProposal.freelancerWallet) {
-        // Send proposal automatically
+        // 1. Trigger wallet transaction
+        try {
+          setLoading(true);
+          await sendProposalTx(pendingProposal.freelancerWallet, userPrompt);
+        } catch (err: any) {
+          setChat(prev => [
+            ...prev,
+            { role: "agent", content: `Failed to send proposal transaction: ${err.message || err}` },
+          ]);
+          setLoading(false);
+          inputRef.current?.focus();
+          return;
+        }
+        // 2. After tx confirmed, send proposal automatically
         await fetch("/api/send-proposal", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -100,7 +114,20 @@ export default function Agent() {
         freelancer = allFreelancers.find(f => f.name.toLowerCase().split(' ')[0] === usernameOrName);
       }
       if (freelancer && pendingProposal && pendingProposal.details) {
-        // Send proposal automatically using freelancer's wallet address
+        // 1. Trigger wallet transaction
+        try {
+          setLoading(true);
+          await sendProposalTx(freelancer.wallet, pendingProposal.details);
+        } catch (err: any) {
+          setChat(prev => [
+            ...prev,
+            { role: "agent", content: `Failed to send proposal transaction: ${err.message || err}` },
+          ]);
+          setLoading(false);
+          inputRef.current?.focus();
+          return;
+        }
+        // 2. After tx confirmed, send proposal automatically using freelancer's wallet address
         await fetch("/api/send-proposal", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
