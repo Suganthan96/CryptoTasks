@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -9,9 +8,9 @@ import styled from 'styled-components';
 import React from 'react';
 
 const GlowingButton = styled.button`
-  --glow-color: #ed008b;
-  --glow-spread-color: rgba(237, 0, 139, 0.7);
-  --enhanced-glow-color: #ff4fcf;
+  --glow-color: #fff;
+  --glow-spread-color: rgba(255,255,255,0.7);
+  --enhanced-glow-color: #fff;
   --btn-color: #1a0020;
   border: .25em solid var(--glow-color);
   padding: 1em 3em;
@@ -57,6 +56,82 @@ const GlowingButton = styled.button`
   }
 `;
 
+const LogoContainer = styled.div`
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  
+  &:hover {
+    transform: translateY(-8px) scale(1.08);
+  }
+  
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 140%;
+    height: 140%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.08) 30%,
+      transparent 70%
+    );
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  &:hover::before {
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+  
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(255, 255, 255, 0.12) 40%,
+      transparent 70%
+    );
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.7;
+  }
+  
+  &:hover::after {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 1;
+  }
+`;
+
+const LogoImage = styled.img`
+  width: 380px;
+  height: 380px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4))
+          drop-shadow(0 0 30px rgba(255, 255, 255, 0.2));
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  margin-bottom: 0;
+  ${LogoContainer}:hover & {
+    filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.7)) 
+            drop-shadow(0 0 50px rgba(255, 255, 255, 0.5))
+            drop-shadow(0 0 75px rgba(255, 255, 255, 0.3));
+  }
+`;
+
 const StyledConnectWrapper = styled.div`
   .connect-btn-row {
     display: flex;
@@ -79,9 +154,9 @@ if (typeof window === 'undefined') {
 function GatedHome() {
   const { isConnected } = useAccount();
   const router = useRouter();
-  const vantaRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const hasNavigated = useRef(false);
+  const vantaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isConnected && pathname !== "/freelancers" && !hasNavigated.current) {
@@ -90,30 +165,30 @@ function GatedHome() {
     }
   }, [isConnected, pathname, router]);
 
+  // Vanta Birds background animation
   useEffect(() => {
     let vantaEffect: any = null;
     let threeScript: HTMLScriptElement | null = null;
     let vantaScript: HTMLScriptElement | null = null;
-    // Dynamically load three.js and vanta.globe
     const loadVanta = async () => {
       if (typeof window !== "undefined" && vantaRef.current) {
         // Load three.js
         if (!(window as any).THREE) {
           threeScript = document.createElement("script");
-          threeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js";
+          threeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
           threeScript.async = true;
           document.body.appendChild(threeScript);
           await new Promise(res => { threeScript!.onload = res; });
         }
-        // Load vanta.globe
+        // Load vanta.birds
         vantaScript = document.createElement("script");
-        vantaScript.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js";
+        vantaScript.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js";
         vantaScript.async = true;
         document.body.appendChild(vantaScript);
         await new Promise(res => { vantaScript!.onload = res; });
-        // Initialize VANTA
-        if ((window as any).VANTA && (window as any).VANTA.GLOBE) {
-          vantaEffect = (window as any).VANTA.GLOBE({
+        // Initialize VANTA Birds
+        if ((window as any).VANTA && (window as any).VANTA.BIRDS) {
+          vantaEffect = (window as any).VANTA.BIRDS({
             el: vantaRef.current,
             mouseControls: true,
             touchControls: true,
@@ -122,9 +197,7 @@ function GatedHome() {
             minWidth: 200.00,
             scale: 1.00,
             scaleMobile: 1.00,
-            color: 0xed008b,
-            size: 1.30,
-            backgroundColor: 0x0
+            birdSize: 2.5
           });
         }
       }
@@ -139,14 +212,26 @@ function GatedHome() {
 
   return (
     <>
-      <div ref={vantaRef} style={{ position: "fixed", inset: 0, zIndex: -1 }} />
-      <div className="min-h-screen bg-transparent flex flex-col items-start justify-center px-4 ml-40">
-        <h1 className="text-5xl md:text-6xl font-extrabold text-left mb-8 text-white">
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-800 to-red-600 bg-clip-text text-transparent">
-            CryptoTasks
+      <div ref={vantaRef} id="vanta-bg" style={{ position: "fixed", inset: 0, zIndex: -1 }} />
+      <div className="min-h-screen bg-transparent flex flex-col items-start px-4 ml-40" style={{ color: '#fff', marginTop: '8rem' }}>
+        {/* Logo */}
+        <LogoContainer>
+          <LogoImage 
+            src="/logo.png" 
+            alt="Cryptolance Logo" 
+            onError={(e) => {
+              console.error('Logo not found. Make sure logo.png is in your public folder');
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        </LogoContainer>
+        
+        <h1 className="text-5xl md:text-6xl font-extrabold text-left mb-8" style={{ color: '#fff', marginTop: '-6.5rem' }}>
+          <span style={{ color: '#fff' }}>
+            Cryptolance
           </span>
         </h1>
-        <p className="text-xl font-semibold mb-8 text-left" style={{ color: '#ff4fcf' }}>
+        <p className="text-xl font-semibold mb-8 text-left" style={{ color: '#fff' }}>
           Fully Autonomous Freelancers Hiring Platform
         </p>
         <StyledConnectWrapper>
@@ -173,7 +258,7 @@ function GatedHome() {
                       type="button"
                       disabled={!ready}
                     >
-                      As Freelancer
+                      Freelancer
                     </GlowingButton>
                   );
                 }}
@@ -201,7 +286,7 @@ function GatedHome() {
                       type="button"
                       disabled={!ready}
                     >
-                      As Client
+                      Client
                     </GlowingButton>
                   );
                 }}
